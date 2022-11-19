@@ -61,6 +61,7 @@ void* sortOrders(void* date1, void* date2) {
 	return arr1[0] - arr2[0];
 }
 
+/**
 char*[] sortCustInfo(char*[] info, int[][] ords, int[][] sortedOrds) {
 	char* tempInfo[3];
 	for(int i=0; i<3; i++) {
@@ -71,7 +72,7 @@ char*[] sortCustInfo(char*[] info, int[][] ords, int[][] sortedOrds) {
 		}
 	}
 	return tempInfo;
-}
+} **/
 
 void* sendOrder() {
 	sleep(20);
