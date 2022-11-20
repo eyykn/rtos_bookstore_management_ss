@@ -21,12 +21,13 @@ int main(int argc, char **argv) {
     char** orderDates = malloc(2 * sizeof(char*));
     char** classDates = malloc(2 * sizeof(char*));
     char** classTimes = malloc(2 * sizeof(char*));
-	char *orderInfo[4][100];
+    char*** orderInfo = malloc(2 * sizeof(char**));
 
 	for (int i=0; i< MAX_BOOKS; i++) {
 		orderDates[i] = malloc(9 * sizeof(char));
 		classDates[i] = malloc(9 * sizeof(char));
 		classTimes[i] = malloc(6 * sizeof(char));
+		orderInfo[i] = malloc(4 * sizeof(char*));
 	}
 
 	printf("Welcome, please see book menu:\n");
@@ -45,20 +46,21 @@ int main(int argc, char **argv) {
 		bookCount++;
 	} while (bookCount < MAX_BOOKS);
 
-	for (int i=0; i< MAX_BOOKS; i++) {
-		printf("book menu=%s\n",  BOOK_MENU[orderNums[i]-1]);
-		strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
-		printf("after book menu\n");
-		printf("orderDates[i]");
-		strcpy(orderInfo[i][1], orderDates[i]);
-		printf("after order dates\n");
-		strcpy(orderInfo[i][2], classDates[i]);
-		printf("after class dates\n");
-		strcpy(orderInfo[i][3], classTimes[i]);
-		printf("after class times\n");
-	}
+	printf("here post while\n");
 
-	printf("%s %s %s %s %s %s %s %s", orderInfo[0][0], orderInfo[0][1], orderInfo[1][0], orderInfo[1][1],  orderInfo[2][0], orderInfo[2][1], orderInfo[3][0], orderInfo[3][1]);
+	for (int i=0; i< MAX_BOOKS; i++) {
+		printf("here in for loop to set orderInfo\n");
+		char* fromMenu;
+		fromMenu = malloc(strlen(BOOK_MENU[orderNums[i]-1]) * sizeof(char));
+		strcpy(fromMenu, BOOK_MENU[orderNums[i]-1]);
+		orderInfo[i][0] = fromMenu;
+		orderInfo[i][1] = orderDates[i];
+		orderInfo[i][2] = classDates[i];
+		orderInfo[i][3] = classTimes[i];
+
+	}
+	// copy paste for sample input: 1 12/12/12 12/12/12 11:11
+	printf("order info: %s %s %s %s %s %s %s %s\n", &*orderInfo[0][0],&*orderInfo[0][1], &*orderInfo[0][2], &*orderInfo[0][3], &*orderInfo[1][0], &*orderInfo[1][1], &*orderInfo[1][2], &*orderInfo[1][3]);
 
 	// coid = name_open("book_order", ND_LOCAL_NODE);
 	// sent_id = MsgSend_r(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
