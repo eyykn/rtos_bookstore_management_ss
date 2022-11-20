@@ -12,7 +12,7 @@
 
 #include "server.h" // defines messages between client & server
 
-int sortOrders();
+int sortOrders(int*, int*);
 
 typedef union {
 	uint16_t type;
