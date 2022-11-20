@@ -68,6 +68,11 @@ int main(int argc, char **argv){
 					switch(msg.type) {
 						case SEND_ORDER_MSG_TYPE:
 							client_pid = info.pid;
+							//Display msg received from client
+							printf("Order Info received from client: \n");
+							printf("Book Num=%d, Order Date (DDMMYY)=%d, Class Date (DDMMYY)=%d, Class Time (HHMM)=%d\n", msg.send_order_msg.orderInfo[0][0], msg.send_order_msg.orderInfo[0][1], msg.send_order_msg.orderInfo[0][2], msg.send_order_msg.orderInfo[0][3]);
+							printf("Book Num=%d, Order Date (DDMMYY)=%d, Class Date (DDMMYY)=%d, Class Time (HHMM)=%d\n", msg.send_order_msg.orderInfo[1][0], msg.send_order_msg.orderInfo[1][1], msg.send_order_msg.orderInfo[1][2], msg.send_order_msg.orderInfo[1][3]);
+
 							//Store order info for client
 							for(int i=0; i<2; i++){
 								client_orders[order_num][0]=client_pid;
@@ -79,6 +84,9 @@ int main(int argc, char **argv){
 								order_num++;
 							}
 							order_num++;
+
+							//Figure out priorities for orders- sort in order of: class date->class time->order date
+
 							break;
 						default:
 							break;
