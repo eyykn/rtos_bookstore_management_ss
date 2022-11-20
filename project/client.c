@@ -24,7 +24,9 @@ int main(int argc, char **argv) {
 	char *orderInfo[4][100];
 
 	for (int i=0; i< MAX_BOOKS; i++) {
-		orderDates[i] = malloc(8 * sizeof(char));
+		orderDates[i] = malloc(9 * sizeof(char));
+		classDates[i] = malloc(9 * sizeof(char));
+		classTimes[i] = malloc(6 * sizeof(char));
 	}
 
 	printf("Welcome, please see book menu:\n");
@@ -33,15 +35,12 @@ int main(int argc, char **argv) {
 
 	// predetermined to only let a client order 2 books
 	do {
-		printf("Enter order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM & book number to order: ");
+		printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM: \n");
 		int d1, d2, m1, m2, y1, y2, min, hour;
-		scanf("%d/%d/%d %d/%d/%d %d:%d %d", &d1, &m1, &y1, &d2, &m2, &y2, &hour, &min, &orderNums[bookCount]);
+		scanf("%d %d/%d/%d %d/%d/%d %d:%d", &orderNums[bookCount], &d1, &m1, &y1, &d2, &m2, &y2, &hour, &min);
 		sprintf(orderDates[bookCount], "%d/%d/%d", d1, m1, y1);
-		printf("test p1 done");
 		sprintf(classDates[bookCount], "%d/%d/%d", d2, m2, y2);
-		printf("test p2 done");
 		sprintf(classTimes[bookCount], "%d:%d", hour, min);
-		printf("test p3 done");
 		fflush(stdin);
 		bookCount++;
 	} while (bookCount < MAX_BOOKS);
