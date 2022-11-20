@@ -18,11 +18,13 @@ int main(int argc, char **argv) {
 	// char *rmsg;
 	int bookCount=0;
 	int orderNums[2];
-	int** orderDates = malloc(2 * sizeof(int));
-	char *orderInfo[2][100];
+    char** orderDates = malloc(2 * sizeof(char*));
+    char** classDates = malloc(2 * sizeof(char*));
+    char** classTimes = malloc(2 * sizeof(char*));
+	char *orderInfo[4][100];
 
 	for (int i=0; i< MAX_BOOKS; i++) {
-		orderDates[i] = malloc(8 * sizeof(int));
+		orderDates[i] = malloc(8 * sizeof(char));
 	}
 
 	printf("Welcome, please see book menu:\n");
@@ -30,22 +32,28 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	// predetermined to only let a client order 2 books
-	while (bookCount < MAX_BOOKS){
-		printf("Enter book number and order date (DDMMYY): \n");
-		scanf("%d %d", &orderNums[bookCount], orderDates[bookCount]);
-		bookCount++;
+	do {
+		printf("Enter order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM & book number to order: ");
+		int d1, d2, m1, m2, y1, y2, min, hour;
+		scanf("%d/%d/%d %d/%d/%d %d:%d %d", &d1, &m1, &y1, &d2, &m2, &y2, &hour, &min, &orderNums[bookCount]);
+		sprintf(orderDates[bookCount], "%d/%d/%d", d1, m1, y1);
+		printf("test p1 done");
+		sprintf(classDates[bookCount], "%d/%d/%d", d2, m2, y2);
+		printf("test p2 done");
+		sprintf(classTimes[bookCount], "%d:%d", hour, min);
+		printf("test p3 done");
 		fflush(stdin);
-	}
+		bookCount++;
+	} while (bookCount < MAX_BOOKS);
 
-	//SEG FAULTING RN - also orderDates is now int
 	for (int i=0; i< MAX_BOOKS; i++) {
-		//strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
-		//strcpy(orderInfo[i][1], orderDates[i]);
-		orderInfo[i][0]= BOOK_MENU[orderNums[i]-1];
-		orderInfo[i][1]= orderDates[i];
+		strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
+		strcpy(orderInfo[i][1], orderDates[i]);
+		strcpy(orderInfo[i][2], classDates[i]);
+		strcpy(orderInfo[i][3], classTimes[i]);
 	}
 
-	printf("%s %s %s %s", orderInfo[0][0], orderInfo[0][1], orderInfo[1][0], orderInfo[1][1]);
+	printf("%s %s %s %s %s %s %s %s", orderInfo[0][0], orderInfo[0][1], orderInfo[1][0], orderInfo[1][1],  orderInfo[2][0], orderInfo[2][1], orderInfo[3][0], orderInfo[3][1]);
 
 	// coid = name_open("book_order", ND_LOCAL_NODE);
 	// sent_id = MsgSend_r(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
