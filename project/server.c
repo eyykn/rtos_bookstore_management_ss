@@ -97,6 +97,9 @@ int main(int argc, char **argv){
 
 							break;
 						default:
+							printf("MsgError\n");
+							MsgError(rcvid, -1);
+							return EXIT_FAILURE;
 							break;
 					}
 				}
