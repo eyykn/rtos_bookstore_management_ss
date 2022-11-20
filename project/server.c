@@ -21,9 +21,11 @@ typedef union {
 int main(int argc, char **argv){
 
 	name_attach_t *attach;
-	int rcvid, client_num=0, client_pid;
+	int rcvid, client_pid;
+	int order_num=0;
 	struct _msg_info info;
 	recv_buf_t msg;
+	int client_orders[10][5];
 
 	// connect
 	attach=name_attach(NULL, SERVER_NAME, 0);
@@ -35,7 +37,7 @@ int main(int argc, char **argv){
 
 	while (1) {
 			//Receives message
-			rcvid=MsgReceive(attach->chid, &msg, sizeof(msg), NULL);
+			rcvid=MsgReceive(attach->chid, &msg, sizeof(msg), &info);
 			 if(rcvid==0) {
 				//Pulse
 				 switch (msg.pulse.code) {
@@ -65,12 +67,18 @@ int main(int argc, char **argv){
 				} else if (rcvid > 0) {
 					switch(msg.type) {
 						case SEND_ORDER_MSG_TYPE:
-							client_num++;
-							printf("Client number=%d\n", client_num);
 							client_pid = info.pid;
-							printf("Client pid= %d\n", client_pid);
 							//Store order info for client
-							printf("client info= %d\n", msg.send_order_msg.orderInfo[0][0]);
+							for(int i=0; i<2; i++){
+								client_orders[order_num][0]=client_pid;
+								for(int j=0; j<4; j++){
+									//populate client orders 2D array
+									client_orders[order_num][j+1]=msg.send_order_msg.orderInfo[i][j];
+									printf("client_orders[%d][%d]=%d\n", order_num, j+1, client_orders[order_num][j+1]);
+								}
+								order_num++;
+							}
+							order_num++;
 							break;
 						default:
 							break;

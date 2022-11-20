@@ -43,10 +43,14 @@ int main(int argc, char **argv) {
 	do {
 		printf("Enter book number to order as X, order date as DDMMYY, class start as DDMMYY, class start time as HHMM: \n");
 		int orderNum, orderDate, classDate, classTime;
-		// below is error handling for incorrect inputs - incorrect num of inputs & incorrect format
+		//for later: always reads in 4 (after enter it doesn't count how many fields??)
 		if(scanf("%d %d %d %d", &orderNum, &orderDate, &classDate, &classTime)!=4){
 			printf("Please enter all fields to complete your order.\n");
-		// FOR US (DELETE LATER) : Infinite loop if wrong, maybe take a look later lol
+			printf("order num digits= %d\n", getDigitCount(orderNum));
+			printf("order date digits= %d\n", getDigitCount(orderDate));
+			printf("class date digits= %d\n", getDigitCount(classDate));
+			printf("class time digits= %d\n", getDigitCount(classTime));
+			fflush(stdin);
 		} else if (getDigitCount(orderNum) !=1 ||orderNum > BOOK_COUNT || orderNum < 1) {
 			printf("Please ensure book entered is in the menu presented & is in format X (1 digit). \n");
 		} else if (getDigitCount(orderDate) !=6) {
