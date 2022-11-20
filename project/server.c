@@ -12,6 +12,8 @@
 
 #include "server.h" // defines messages between client & server
 
+int sortOrders();
+
 typedef union {
 	uint16_t type;
 	struct _pulse pulse;
@@ -86,6 +88,12 @@ int main(int argc, char **argv){
 							order_num++;
 
 							//Figure out priorities for orders- sort in order of: class date->class time->order date
+							//Sort by class date
+							for(int i=0; i<order_num; i++){
+									printf("date1= %d, date 2= %d\n",client_orders[i][2], client_orders[i+1][2]);
+									//Crashing right now because I haven't figured out how to store DD, MM, YY separately
+									sortOrders(client_orders[i][2], client_orders[i+1][2]);
+							}
 
 							break;
 						default:
@@ -95,4 +103,32 @@ int main(int argc, char **argv){
 
 			}
 		}
+}
+
+int sortOrders(int* date1, int* date2) {
+	printf("date1= %d, date2=%d\n", date1, date2);
+	char* d1=date1;
+	char* d2=date2;
+	char* y1, y2;
+	char* m1, m2;
+	char* day1, day2;
+
+	//Get day from date
+	sprintf(day1, "%.*s", 2, d1);
+	sprintf(day2, "%.*s", 2, d2);
+	//Get month from date
+	sprintf(m1, "%.*s", 2, d1+2);
+	sprintf(m2, "%.*s", 2, d2+2);
+	//Get year from date
+	sprintf(y1, "%.*s", 2, d1+4);
+	sprintf(y2, "%.*s", 2, d2+4);
+	printf("d1=%s, d2=%s, m1=%s, m2=%s, y1=%s, y2=%s\n", day1, day2, m1, m2, y1, y2);
+
+	int yearDiff = (int*)y1 - (int*)y2;
+	if (yearDiff) return 0;
+	int monthDiff = (int*)m1 - (int*)m2;
+	if (monthDiff) return 0;
+	int dayDiff= (int*)day1-(int*)day2;
+	if(dayDiff) return 0;
+	return 1;
 }
