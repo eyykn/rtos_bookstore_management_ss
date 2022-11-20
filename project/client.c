@@ -46,10 +46,16 @@ int main(int argc, char **argv) {
 	} while (bookCount < MAX_BOOKS);
 
 	for (int i=0; i< MAX_BOOKS; i++) {
+		printf("book menu=%s\n",  BOOK_MENU[orderNums[i]-1]);
 		strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
+		printf("after book menu\n");
+		printf("orderDates[i]");
 		strcpy(orderInfo[i][1], orderDates[i]);
+		printf("after order dates\n");
 		strcpy(orderInfo[i][2], classDates[i]);
+		printf("after class dates\n");
 		strcpy(orderInfo[i][3], classTimes[i]);
+		printf("after class times\n");
 	}
 
 	printf("%s %s %s %s %s %s %s %s", orderInfo[0][0], orderInfo[0][1], orderInfo[1][0], orderInfo[1][1],  orderInfo[2][0], orderInfo[2][1], orderInfo[3][0], orderInfo[3][1]);
