@@ -24,7 +24,6 @@ clean:
 #	cd solutions; make clean
 
 
-#uncomment when server
-#server.o: server.c server.h
+server.o: server.c server.h
 client.o: client.c server.h
 
