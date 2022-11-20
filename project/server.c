@@ -61,7 +61,8 @@ int main(int argc, char **argv){
 					exit(EXIT_FAILURE);
 
 				} else if (rcvid > 0) {
-					//Add Cases
+					//Store order info for client
+					printf("client info= %s\n", msg);
 				}
 
 			}

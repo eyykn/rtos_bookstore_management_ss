@@ -14,9 +14,6 @@ int printMenu();
 
 int main(int argc, char **argv) {
 
-
-	// int coid, sentid;
-	// char *rmsg;
 	int bookCount=0;
 	int orderNums[2];
 	int coid, ret_status;
@@ -41,18 +38,19 @@ int main(int argc, char **argv) {
 	do {
 		printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM: \n");
 		int d1, d2, m1, m2, y1, y2, min, hour;
-		scanf("%d %d/%d/%d %d/%d/%d %d:%d", &orderNums[bookCount], &d1, &m1, &y1, &d2, &m2, &y2, &hour, &min);
-		sprintf(orderDates[bookCount], "%d/%d/%d", d1, m1, y1);
-		sprintf(classDates[bookCount], "%d/%d/%d", d2, m2, y2);
-		sprintf(classTimes[bookCount], "%d:%d", hour, min);
-		fflush(stdin);
-		bookCount++;
+		if(scanf("%d %d/%d/%d %d/%d/%d %d:%d", &orderNums[bookCount], &d1, &m1, &y1, &d2, &m2, &y2, &hour, &min)!=9){
+			printf("Please enter all fields to complete your order.\n");
+		}else{
+			sprintf(orderDates[bookCount], "%d/%d/%d", d1, m1, y1);
+			sprintf(classDates[bookCount], "%d/%d/%d", d2, m2, y2);
+			sprintf(classTimes[bookCount], "%d:%d", hour, min);
+			fflush(stdin);
+			bookCount++;
+		}
+
 	} while (bookCount < MAX_BOOKS);
 
-	printf("here post while\n");
-
 	for (int i=0; i< MAX_BOOKS; i++) {
-		printf("here in for loop to set orderInfo\n");
 		char* fromMenu;
 		fromMenu = malloc(strlen(BOOK_MENU[orderNums[i]-1]) * sizeof(char));
 		strcpy(fromMenu, BOOK_MENU[orderNums[i]-1]);
