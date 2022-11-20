@@ -110,21 +110,28 @@ int main(int argc, char **argv){
 
 int sortOrders(int* date1, int* date2) {
 	printf("date1= %d, date2=%d\n", date1, date2);
-	char* d1=date1;
-	char* d2=date2;
-	char* y1, y2;
-	char* m1, m2;
-	char* day1, day2;
+	char* d1=(char*)date1;
+	char* d2=(char*)date2;
+	char y1[2];
+	char y2[2];
+	char m1[2];
+	char m2[2];
+	char day1[2];
+    char day2[2];
 
 	//Get day from date
-	sprintf(day1, "%.*s", 2, d1);
-	sprintf(day2, "%.*s", 2, d2);
+	snprintf(day1, 2, "%s", d1);
+	snprintf(day2, 2, "%s", d2);
+	printf("d1=%s, d2=%s\n", day1, day2);
+
 	//Get month from date
-	sprintf(m1, "%.*s", 2, d1+2);
-	sprintf(m2, "%.*s", 2, d2+2);
+	snprintf(m1, 2, "%s", d1+2);
+	snprintf(m2, 2, "%s", d2+2);
+	printf("m1=%s, m2=%s\n", m1, m2);
+
 	//Get year from date
-	sprintf(y1, "%.*s", 2, d1+4);
-	sprintf(y2, "%.*s", 2, d2+4);
+	snprintf(y1, 2, "%s", d1+4);
+	snprintf(y2, 2, "%s", d2+4);
 	printf("d1=%s, d2=%s, m1=%s, m2=%s, y1=%s, y2=%s\n", day1, day2, m1, m2, y1, y2);
 
 	int yearDiff = (int*)y1 - (int*)y2;
