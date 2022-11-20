@@ -23,6 +23,13 @@ int main(int argc, char **argv) {
     char** classTimes = malloc(2 * sizeof(char*));
     char*** orderInfo = malloc(2 * sizeof(char**));
 
+    //Open connection to server
+    coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
+    if(coid ==-1){
+    	printf("Error connecting to server.\n");
+    	return EXIT_FAILURE;
+    }
+
 	for (int i=0; i< MAX_BOOKS; i++) {
 		orderDates[i] = malloc(9 * sizeof(char));
 		classDates[i] = malloc(9 * sizeof(char));
@@ -63,10 +70,9 @@ int main(int argc, char **argv) {
 	// copy paste for sample input: 1 12/12/12 12/12/12 11:11
 	printf("order info: %s %s %s %s %s %s %s %s\n", &*orderInfo[0][0],&*orderInfo[0][1], &*orderInfo[0][2], &*orderInfo[0][3], &*orderInfo[1][0], &*orderInfo[1][1], &*orderInfo[1][2], &*orderInfo[1][3]);
 
-	coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
-	ret_status = MsgSend_r(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
+	ret_status = MsgSend(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
 	if(ret_status==-1){
-		printf("Error sending get message.\n");
+		printf("Error sending message to server.\n");
 		return EXIT_FAILURE;
 	}
 	printf( "%s\n", rmsg);

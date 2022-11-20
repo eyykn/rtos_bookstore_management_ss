@@ -16,15 +16,15 @@ int main(int argc, char **argv){
 	typedef union {
 		uint16_t type;
 		struct _pulse pulse;
-		//Add other
+		char*** orderInfo;
 	} recv_buf_t;
 
 	name_attach_t *attach;
 	int rcvid;
 	struct _msg_info info;
-	//Create struct for msg + include in server.h
 	recv_buf_t msg;
 	attach=name_attach(NULL, SERVER_NAME, 0);
+	int client_num=0;
 
 	if (attach==NULL){
 		printf("Name attach failed.\n");
@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 
 	while (1) {
 			//Receives message
-			rcvid=MsgReceive(attach->chid, &msg, sizeof(msg), &info);
+			rcvid=MsgReceive(attach->chid, &msg, sizeof(msg), NULL);
 			 if(rcvid==0) {
 				//Pulse
 				 switch (msg.pulse.code) {
@@ -61,8 +61,12 @@ int main(int argc, char **argv){
 					exit(EXIT_FAILURE);
 
 				} else if (rcvid > 0) {
+					client_num++;
+					printf("Client number=%d\n", client_num);
+					int client_pid= info.pid;
+					printf("Client pid= %d\n", client_pid);
 					//Store order info for client
-					printf("client info= %s\n", msg);
+					printf("client info= %s\n", msg.orderInfo[0][0]);
 				}
 
 			}
