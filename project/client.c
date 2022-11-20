@@ -31,19 +31,18 @@ int main(int argc, char **argv) {
 
 	// predetermined to only let a client order 2 books
 	while (bookCount < MAX_BOOKS){
-		printf("Bookcount= %d\n", bookCount);
 		printf("Enter book number and order date (DDMMYY): \n");
 		scanf("%d %d", &orderNums[bookCount], orderDates[bookCount]);
 		bookCount++;
-		printf("updated bookCount=%d\n", bookCount);
 		fflush(stdin);
 	}
 
-
 	//SEG FAULTING RN - also orderDates is now int
 	for (int i=0; i< MAX_BOOKS; i++) {
-		strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
-		strcpy(orderInfo[i][1], orderDates[i]);
+		//strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
+		//strcpy(orderInfo[i][1], orderDates[i]);
+		orderInfo[i][0]= BOOK_MENU[orderNums[i]-1];
+		orderInfo[i][1]= orderDates[i];
 	}
 
 	printf("%s %s %s %s", orderInfo[0][0], orderInfo[0][1], orderInfo[1][0], orderInfo[1][1]);
