@@ -18,11 +18,11 @@ int main(int argc, char **argv) {
 	// char *rmsg;
 	int bookCount=0;
 	int orderNums[2];
-    char** orderDates = malloc(2 * sizeof(char*));
+	int** orderDates = malloc(2 * sizeof(int));
 	char *orderInfo[2][100];
 
 	for (int i=0; i< MAX_BOOKS; i++) {
-		orderDates[i] = malloc(8 * sizeof(char));
+		orderDates[i] = malloc(8 * sizeof(int));
 	}
 
 	printf("Welcome, please see book menu:\n");
@@ -30,13 +30,17 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	// predetermined to only let a client order 2 books
-	do {
-		printf("Enter order date as DD/MM/YY & book number to order: ");
-		scanf("%s %d", orderDates[bookCount], &orderNums[bookCount]);
-		fflush(stdin);
+	while (bookCount < MAX_BOOKS){
+		printf("Bookcount= %d\n", bookCount);
+		printf("Enter book number and order date (DDMMYY): \n");
+		scanf("%d %d", &orderNums[bookCount], orderDates[bookCount]);
 		bookCount++;
-	} while (bookCount < MAX_BOOKS);
+		printf("updated bookCount=%d\n", bookCount);
+		fflush(stdin);
+	}
 
+
+	//SEG FAULTING RN - also orderDates is now int
 	for (int i=0; i< MAX_BOOKS; i++) {
 		strcpy(orderInfo[i][0], BOOK_MENU[orderNums[i]-1]);
 		strcpy(orderInfo[i][1], orderDates[i]);

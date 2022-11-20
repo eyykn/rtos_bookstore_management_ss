@@ -8,7 +8,7 @@
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
 #define SERVER_NAME "server_name"
-#define MAX_BOOKS    2
+#define MAX_BOOKS 2
 
 enum FRUIT_ENUM {
 	FOREACH_BOOK(GENERATE_ENUM)
