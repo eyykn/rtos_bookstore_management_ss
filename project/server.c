@@ -13,12 +13,17 @@
 #include "server.h" // defines messages between client & server
 
 int main(int argc, char **argv){
+	typedef union {
+		uint16_t type;
+		struct _pulse pulse;
+		//Add other
+	} recv_buf_t;
 
 	name_attach_t *attach;
 	int rcvid;
 	struct _msg_info info;
 	//Create struct for msg + include in server.h
-
+	recv_buf_t msg;
 	attach=name_attach(NULL, SERVER_NAME, 0);
 
 	if (attach==NULL){
