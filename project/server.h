@@ -24,5 +24,5 @@ static const char *BOOK_MENU[] = {
 
 typedef struct send_order_msg {
 	uint16_t type;
-	int orderInfo[2][4];
+	int orderInfo[2][9];
 } send_order_msg_t;
