@@ -7,6 +7,7 @@
 #include "server.h"
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/netmgr.h>
 
 
 int printMenu();
@@ -18,6 +19,7 @@ int main(int argc, char **argv) {
 	// char *rmsg;
 	int bookCount=0;
 	int orderNums[2];
+	int coid, ret_status;
     char** orderDates = malloc(2 * sizeof(char*));
     char** classDates = malloc(2 * sizeof(char*));
     char** classTimes = malloc(2 * sizeof(char*));
@@ -62,9 +64,13 @@ int main(int argc, char **argv) {
 	// copy paste for sample input: 1 12/12/12 12/12/12 11:11
 	printf("order info: %s %s %s %s %s %s %s %s\n", &*orderInfo[0][0],&*orderInfo[0][1], &*orderInfo[0][2], &*orderInfo[0][3], &*orderInfo[1][0], &*orderInfo[1][1], &*orderInfo[1][2], &*orderInfo[1][3]);
 
-	// coid = name_open("book_order", ND_LOCAL_NODE);
-	// sent_id = MsgSend_r(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
-	// printf( "Received message from store server: %d\n", rmsg);
+	coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
+	ret_status = MsgSend_r(coid, &orderInfo, sizeof(orderInfo), &rmsg, sizeof(rmsg));
+	if(ret_status==-1){
+		printf("Error sending get message.\n");
+		return EXIT_FAILURE;
+	}
+	printf( "Received message from store server: %d\n", rmsg);
 
 	return EXIT_SUCCESS;
 }
