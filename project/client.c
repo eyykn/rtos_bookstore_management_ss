@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 	int bookCount=0;
 	int orderNums[2];
 	int coid, ret_status;
+	char* rmsg;
     char** orderDates = malloc(2 * sizeof(char*));
     char** classDates = malloc(2 * sizeof(char*));
     char** classTimes = malloc(2 * sizeof(char*));
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
 		printf("Error sending get message.\n");
 		return EXIT_FAILURE;
 	}
-	printf( "Received message from store server: %d\n", rmsg);
+	printf( "%s\n", rmsg);
 
 	return EXIT_SUCCESS;
 }
