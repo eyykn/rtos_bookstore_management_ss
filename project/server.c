@@ -12,7 +12,7 @@
 
 #include "server.h" // defines messages between client & server
 
-int sortOrders(int*, int*);
+int sortOrders(int, int, int, int, int, int);
 
 typedef union {
 	uint16_t type;
@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 	int order_num=0;
 	struct _msg_info info;
 	recv_buf_t msg;
-	int client_orders[10][5];
+	int client_orders[10][9];
 
 	// connect
 	attach=name_attach(NULL, SERVER_NAME, 0);
@@ -72,27 +72,26 @@ int main(int argc, char **argv){
 							client_pid = info.pid;
 							//Display msg received from client
 							printf("Order Info received from client: \n");
-							printf("Book Num=%d, Order Date (DDMMYY)=%d, Class Date (DDMMYY)=%d, Class Time (HHMM)=%d\n", msg.send_order_msg.orderInfo[0][0], msg.send_order_msg.orderInfo[0][1], msg.send_order_msg.orderInfo[0][2], msg.send_order_msg.orderInfo[0][3]);
-							printf("Book Num=%d, Order Date (DDMMYY)=%d, Class Date (DDMMYY)=%d, Class Time (HHMM)=%d\n", msg.send_order_msg.orderInfo[1][0], msg.send_order_msg.orderInfo[1][1], msg.send_order_msg.orderInfo[1][2], msg.send_order_msg.orderInfo[1][3]);
+							printf("Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[0][0], msg.send_order_msg.orderInfo[0][1], msg.send_order_msg.orderInfo[0][2], msg.send_order_msg.orderInfo[0][3],  msg.send_order_msg.orderInfo[0][4],  msg.send_order_msg.orderInfo[0][5],  msg.send_order_msg.orderInfo[0][6],  msg.send_order_msg.orderInfo[0][7],  msg.send_order_msg.orderInfo[0][8]);
+							printf("Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[1][0], msg.send_order_msg.orderInfo[1][1], msg.send_order_msg.orderInfo[1][2], msg.send_order_msg.orderInfo[1][3], msg.send_order_msg.orderInfo[1][4], msg.send_order_msg.orderInfo[1][5],  msg.send_order_msg.orderInfo[1][6],  msg.send_order_msg.orderInfo[1][7],  msg.send_order_msg.orderInfo[1][8]);
 
 							//Store order info for client
 							for(int i=0; i<2; i++){
 								client_orders[order_num][0]=client_pid;
-								for(int j=0; j<4; j++){
+								for(int j=0; j<9; j++){
 									//populate client orders 2D array
 									client_orders[order_num][j+1]=msg.send_order_msg.orderInfo[i][j];
 									printf("client_orders[%d][%d]=%d\n", order_num, j+1, client_orders[order_num][j+1]);
 								}
 								order_num++;
 							}
-							order_num++;
 
 							//Figure out priorities for orders- sort in order of: class date->class time->order date
 							//Sort by class date
-							for(int i=0; i<order_num; i++){
-									printf("date1= %d, date 2= %d\n",client_orders[i][2], client_orders[i+1][2]);
+							for(int i=0; i<order_num-1; i++){
+									printf("date1= %d%d%d, date 2= %d%d%d\n",client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
 									//Crashing right now because I haven't figured out how to store DD, MM, YY separately
-									sortOrders(client_orders[i][2], client_orders[i+1][2]);
+									int sortVal=sortOrders(client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
 							}
 
 							break;
@@ -108,37 +107,13 @@ int main(int argc, char **argv){
 		}
 }
 
-int sortOrders(int* date1, int* date2) {
-	printf("date1= %d, date2=%d\n", date1, date2);
-	char* d1=(char*)date1;
-	char* d2=(char*)date2;
-	char y1[2];
-	char y2[2];
-	char m1[2];
-	char m2[2];
-	char day1[2];
-    char day2[2];
-
-	//Get day from date
-	snprintf(day1, 2, "%s", d1);
-	snprintf(day2, 2, "%s", d2);
-	printf("d1=%s, d2=%s\n", day1, day2);
-
-	//Get month from date
-	snprintf(m1, 2, "%s", d1+2);
-	snprintf(m2, 2, "%s", d2+2);
-	printf("m1=%s, m2=%s\n", m1, m2);
-
-	//Get year from date
-	snprintf(y1, 2, "%s", d1+4);
-	snprintf(y2, 2, "%s", d2+4);
-	printf("d1=%s, d2=%s, m1=%s, m2=%s, y1=%s, y2=%s\n", day1, day2, m1, m2, y1, y2);
-
-	int yearDiff = (int*)y1 - (int*)y2;
+//Sorts orders by date
+int sortOrders(int d1, int d2, int m1, int m2, int y1, int y2) {
+	int yearDiff = y1 - y2;
 	if (yearDiff) return 0;
-	int monthDiff = (int*)m1 - (int*)m2;
+	int monthDiff = m1 - m2;
 	if (monthDiff) return 0;
-	int dayDiff= (int*)day1-(int*)day2;
+	int dayDiff= d1-d2;
 	if(dayDiff) return 0;
 	return 1;
 }
