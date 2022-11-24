@@ -20,6 +20,8 @@ int main(int argc, char **argv) {
 	int coid;
     pthread_t tids[NUMTHREADS];
 
+
+
     // open connection to server
     coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
     if(coid ==-1){
@@ -81,7 +83,7 @@ int printMenu() {
 	return EXIT_SUCCESS;
 }
 void* getClientOrder(int coid){
-		sleep(20);
+		sleep(5);
 	    // order related variables
 		int bookCount=0;
 		int orderNums[2];
@@ -93,9 +95,9 @@ void* getClientOrder(int coid){
 	    int* classDateYr = malloc(4 * sizeof(int));
 	    int* classTimeHr = malloc(2 * sizeof(int));
 	    int* classTimeMin = malloc(2 * sizeof(int));
+	    send_order_msg_t send_order_msg;
 	    int ret_status;
 	    char* store_msg;
-	    send_order_msg_t send_order_msg;
 
 		// predetermined to only let a client order 2 books in one session
 		do {
@@ -153,14 +155,15 @@ void* getClientOrder(int coid){
 		printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
 		printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
+	   	ret_status = MsgSend(coid, &send_order_msg, sizeof(send_order_msg), &store_msg, sizeof(store_msg));
+	   	if(ret_status==-1){
+	   		printf("Error sending message to server.\n");
+	   		return (NULL);
+	   	}
+	   	printf( "Store has responded to order: %s\n", store_msg);
 
-		ret_status = MsgSend(coid, &send_order_msg, sizeof(send_order_msg), &store_msg, sizeof(store_msg));
-		if(ret_status==-1){
-			printf("Error sending message to server.\n");
-			return EXIT_FAILURE;
-		}
-		printf( "Store has responded to order: %s\n", store_msg);
-		return EXIT_SUCCESS;
+
+		return (NULL);
 }
 
 
