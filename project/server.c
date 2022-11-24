@@ -12,7 +12,7 @@
 
 #include "server.h" // defines messages between client & server
 
-int sortOrders(int, int, int, int, int, int);
+int sortOrders(int, int);
 
 typedef union {
 	uint16_t type;
@@ -87,12 +87,17 @@ int main(int argc, char **argv){
 							}
 
 							//Figure out priorities for orders- sort in order of: class date->class time->order date
-							//Sort by class date
-							for(int i=0; i<order_num-1; i++){
+
+							/*for(int i=0; i<order_num-1; i++){
 									printf("date1= %d%d%d, date 2= %d%d%d\n",client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
-									//Crashing right now because I haven't figured out how to store DD, MM, YY separately
 									int sortVal=sortOrders(client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
+
+									for(int j=0; j<3; j++){
+										sorted_orders[i][j]=client_orders[i][i+4];
+										sorted_orders[i+1][j]=client_orders[i+1][i+4];
+									}
 							}
+							qsort(sorted_orders, 3, 3*sizeof(int), sortOrders);*/
 
 							break;
 						default:
@@ -108,7 +113,12 @@ int main(int argc, char **argv){
 }
 
 //Sorts orders by date
-int sortOrders(int d1, int d2, int m1, int m2, int y1, int y2) {
+int sortOrders(int date1, int date2) {
+	//To do: Figure out how to split date by DD, MM, YY and set the variables below
+	int y1, y2;
+	int m1, m2;
+	int d1, d2;
+
 	int yearDiff = y1 - y2;
 	if (yearDiff) return 0;
 	int monthDiff = m1 - m2;
