@@ -13,6 +13,7 @@
 #include "server.h" // defines messages between client & server
 
 int sortOrders(int, int);
+int sortTimes(int, int);
 
 typedef union {
 	uint16_t type;
@@ -125,5 +126,17 @@ int sortOrders(int date1, int date2) {
 	if (monthDiff) return 0;
 	int dayDiff= d1-d2;
 	if(dayDiff) return 0;
+	return 1;
+}
+
+int sortTimes(int time1, int time2){
+	//To do: Figure out how to split Hr and Min and set the variables below
+	int h1, h2;
+	int m1, m2;
+
+	int hourDiff=h1-h2;
+	if(hourDiff) return 0;
+	int minDiff=m1-m2;
+	if (minDiff) return 0;
 	return 1;
 }
