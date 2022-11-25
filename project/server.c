@@ -99,7 +99,9 @@ int main(int argc, char **argv){
 									}
 							}
 							qsort(sorted_orders, 3, 3*sizeof(int), sortOrders);*/
-
+							char* send_msg="Order received.";
+							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
+							printf("after Msg reply.\n");
 							break;
 						default:
 							printf("MsgError\n");

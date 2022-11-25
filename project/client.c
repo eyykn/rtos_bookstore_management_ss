@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
 
     // open connection to server
     coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
+    printf("coid=%d\n", coid);
     if(coid ==-1){
     	printf("Error connecting to server.\n");
     	return EXIT_FAILURE;
@@ -35,16 +36,17 @@ int main(int argc, char **argv) {
     printf("\n");
 
     //Create client threads
+    //SEG FAULTING rn before second thread creation
    	for(int i=0; i<NUMTHREADS; i++) {
    		pthread_create(&tids[i], NULL, getClientOrder(coid), NULL);
    	}
 
-   	//Ensures main waits for each thread to terminate before exiting
+   	/*//Ensures main waits for each thread to terminate before exiting
    	for(int i=0; i<NUMTHREADS; i++){
    		if(pthread_join(tids[i], NULL)!=0){
    			perror("Error joining thread.");
    		}
-   	}
+   	}*/
 
 	return EXIT_SUCCESS;
 }
@@ -83,6 +85,7 @@ int printMenu() {
 	return EXIT_SUCCESS;
 }
 void* getClientOrder(int coid){
+		printf("HERE\n");
 		sleep(5);
 	    // order related variables
 		int bookCount=0;
@@ -155,6 +158,7 @@ void* getClientOrder(int coid){
 		printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
 		printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
+		printf("coid=%d\n", coid);
 	   	ret_status = MsgSend(coid, &send_order_msg, sizeof(send_order_msg), &store_msg, sizeof(store_msg));
 	   	if(ret_status==-1){
 	   		printf("Error sending message to server.\n");
