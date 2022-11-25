@@ -122,7 +122,22 @@ void* getClientOrder(int coid){
 				printf("Please enter class date as DD/MM/YY (6 digits).\n");
 			} else if ((getDigitCount(ctHr) + getDigitCount(ctMin)) !=4) {
 				printf("Please enter class time as HH:MM (4 digits).\n");
-			} else{
+			} else if (odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
+					cdDay>31 || cdMon<0|| cdMon>12 || cdYr<0 || cdYr>22 || ctHr<00 || ctHr>24|| ctMin<00|| ctMin>59){
+				printf("Please ensure that date/time values are valid.\n");
+			}else if(odMon==04 || odMon==06 || odMon==9 || odMon==11){
+				if(odDay>30){
+					printf("Please ensure that the day value of Order Month is valid.\n");
+				}
+			}else if(cdMon==04 || cdMon==06 || cdMon==9 || cdMon==11){
+				if(cdDay>30){
+					printf("Please ensure that the day value of Class Month is valid.\n");
+				}
+			}else if(cdMon==02 || odMon==02){
+				if(cdDay>28 || odDay>28){
+					printf("Please ensure that the date values (DD/MM/YY) are valid.");
+				}
+			}else{
 				// correct input path
 				orderNums[bookCount] = orderNum;
 				orderDateDay[bookCount] = odDay;
