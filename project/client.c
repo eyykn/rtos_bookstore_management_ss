@@ -117,6 +117,7 @@ void* getClientOrder(int coid){
 			} else {
 				printf("in else: Scanned %d.\n", scanned);
 				printf("in else: Scanned inputs %s.\n", inputs);
+				printf("book count=%d\n", bookCount);
 				orderNum = atoi(&inputs[0]);
 				odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
 				odMon = (10 * (inputs[3] - '0' ) ) + inputs[4] - '0';
@@ -126,22 +127,33 @@ void* getClientOrder(int coid){
 				cdYr = (10 * (inputs[11] - '0' ) ) + inputs[12] - '0';
 				ctHr = (10 * (inputs[13] - '0' ) ) + inputs[14] - '0';
 				ctMin = (10 * (inputs[15] - '0' ) ) + inputs[16] - '0';
-				if (odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
+				printf("odDay=%d\n", odDay);
+				printf("odMon=%d\n", odMon);
+				int flag=1;
+				if(odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
 					cdDay>31 || cdMon<0|| cdMon>12 || cdYr<0 || cdYr>22 || ctHr<00 || ctHr>24|| ctMin<00|| ctMin>59){
 					printf("Please ensure that date/time values are valid.\n");
-				}else if(odMon==04 || odMon==06 || odMon==9 || odMon==11){
+					flag=0;
+				}
+				if(odMon==4 || odMon==6 || odMon==9 || odMon==11){
 					if(odDay>30){
 						printf("Please ensure that the day value of Order Month is valid.\n");
+						flag=0;
 					}
-				}else if(cdMon==04 || cdMon==06 || cdMon==9 || cdMon==11){
+				}
+				if(cdMon==4 || cdMon==6 || cdMon==9 || cdMon==11){
 					if(cdDay>30){
 						printf("Please ensure that the day value of Class Month is valid.\n");
+						flag=0;
 					}
-				}else if(cdMon==02 || odMon==02){
+				}if(cdMon==2 || odMon==2){
 					if(cdDay>28 || odDay>28){
-						printf("Please ensure that the date values (DD/MM/YY) are valid.");
+						printf("Please ensure that the date values (DD/MM/YY) are valid.\n");
+						flag=0;
 					}
-				}else{
+				}
+				if(flag){
+					printf("in correct path.\n");
 					// correct input path
 					orderNums[bookCount] = orderNum;
 					orderDateDay[bookCount] = odDay;
