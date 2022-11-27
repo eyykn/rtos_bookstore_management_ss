@@ -118,7 +118,7 @@ void* getClientOrder(int coid){
 				printf("in else: Scanned %d.\n", scanned);
 				printf("in else: Scanned inputs %s.\n", inputs);
 				printf("book count=%d\n", bookCount);
-				orderNum = atoi(&inputs[0]);
+				orderNum = inputs[0]- '0';
 				odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
 				odMon = (10 * (inputs[3] - '0' ) ) + inputs[4] - '0';
 				odYr = (10 * (inputs[5] - '0' ) ) + inputs[6] - '0';
