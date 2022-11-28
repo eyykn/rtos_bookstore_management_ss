@@ -104,7 +104,7 @@ void* getClientOrder(int coid){
 		// predetermined to only let a client order 2 books in one session
 		do {
 			printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM ->\n");
-			printf("example input:' 1 01/01/01 02/02/02 09:25\n'");
+			printf("example input: 1 01/01/01 02/02/02 09:25\n");
 			char* inputs = malloc(17 * sizeof(char));
 			int orderNum, odDay, odMon, odYr, cdDay, cdMon, cdYr, ctHr, ctMin;
 			//for later: always reads in 4 (after enter it doesn't count how many fields??)
