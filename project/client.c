@@ -30,14 +30,15 @@ int main(int argc, char **argv) {
     	return EXIT_FAILURE;
     }
 
-    // print book menu for client
-    printf("Welcome, please see book menu:\n");
-    printMenu();
-    printf("\n");
+
 
     //Create client threads
     //SEG FAULTING rn before second thread creation
    	for(int i=0; i<NUMTHREADS; i++) {
+   	  // print book menu for client
+   	    printf("Welcome, please see book menu:\n");
+   	    printMenu();
+   	    printf("\n");
    		printf("Numthread %d\n", i);
    		int retVal=pthread_create(&tids[i], NULL, getClientOrder(coid), NULL);
    		if(retVal!=0){
