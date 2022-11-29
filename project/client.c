@@ -38,7 +38,11 @@ int main(int argc, char **argv) {
     //Create client threads
     //SEG FAULTING rn before second thread creation
    	for(int i=0; i<NUMTHREADS; i++) {
-   		pthread_create(&tids[i], NULL, getClientOrder(coid), NULL);
+   		printf("Numthread %d\n", i);
+   		int retVal=pthread_create(&tids[i], NULL, getClientOrder(coid), NULL);
+   		if(retVal!=0){
+   			printf("Creation of thread failed.\n");
+   		}
    	}
 
    	/*//Ensures main waits for each thread to terminate before exiting
@@ -85,10 +89,11 @@ int printMenu() {
 	return EXIT_SUCCESS;
 }
 void* getClientOrder(int coid){
-		sleep(5);
+		printf("In getClientOrder()\n");
 	    // order related variables
 		int bookCount=0;
 		int orderNums[2];
+		printf("before malloc\n");
 	    int* orderDateDay = malloc(4 * sizeof(int));
 	    int* orderDateMon = malloc(4 * sizeof(int));
 	    int* orderDateYr = malloc(4 * sizeof(int));
@@ -97,10 +102,12 @@ void* getClientOrder(int coid){
 	    int* classDateYr = malloc(4 * sizeof(int));
 	    int* classTimeHr = malloc(2 * sizeof(int));
 	    int* classTimeMin = malloc(2 * sizeof(int));
+	    printf("after malloc\n");
 	    send_order_msg_t send_order_msg;
+	    printf("after send order msg\n");
 	    int ret_status;
 	    char store_msg[MAX_STRING_LEN];
-
+	    printf("before do\n");
 		// predetermined to only let a client order 2 books in one session
 		do {
 			printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM ->\n");
@@ -193,7 +200,15 @@ void* getClientOrder(int coid){
 	   		return (NULL);
 	   	}
 	   	printf( "Store has responded to order: %s\n", store_msg);
-
+	   	//free allocated memory
+	   	free(orderDateDay);
+	   	free(orderDateMon);
+	    free(orderDateYr);
+	   	free(classDateDay);
+	   	free(classDateMon);
+	   	free(classDateYr);
+	   	free(classTimeHr);
+	   	free(classTimeMin);
 
 		return (NULL);
 }

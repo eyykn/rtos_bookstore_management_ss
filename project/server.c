@@ -42,6 +42,7 @@ int main(int argc, char **argv){
 	while (1) {
 			//Receives message
 			rcvid=MsgReceive(attach->chid, &msg, sizeof(msg), &info);
+			printf("Received.\n");
 			 if(rcvid==0) {
 				//Pulse
 				 switch (msg.pulse.code) {
