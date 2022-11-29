@@ -35,10 +35,17 @@ int main(int argc, char **argv) {
     }
 
 
+    /*
+<<<<<<< HEAD
+*/
     // print book menu for client
     printf("Welcome, please see book menu:\n");
     printMenu();
     printf("\n");
+    /*
+=======
+>>>>>>> 02b04e28530b55571862afd6d49498dffac683cd
+*/
 
     /*
       pthread_t tid0;
@@ -91,6 +98,10 @@ int main(int argc, char **argv) {
 
     /*
    	for(int i=0; i<NUMTHREADS; i++) {
+   	  // print book menu for client
+   	    printf("Welcome, please see book menu:\n");
+   	    printMenu();
+   	    printf("\n");
    		printf("Numthread %d\n", i);
    		int retVal=pthread_create(&tids[i], NULL, getClientOrder(1), NULL);
    		if(retVal!=0){
