@@ -45,12 +45,12 @@ int main(int argc, char **argv) {
    		}
    	}
 
-   	/*//Ensures main waits for each thread to terminate before exiting
+   	//Ensures main waits for each thread to terminate before exiting
    	for(int i=0; i<NUMTHREADS; i++){
    		if(pthread_join(tids[i], NULL)!=0){
    			perror("Error joining thread.");
    		}
-   	}*/
+   	}
 
 	return EXIT_SUCCESS;
 }
