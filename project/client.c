@@ -11,6 +11,7 @@
 #include "server.h"
 
 #define NUMTHREADS      3
+#define MAX_STRING_LEN    256
 
 int printMenu();
 void* getClientOrder();
@@ -84,7 +85,6 @@ int printMenu() {
 	return EXIT_SUCCESS;
 }
 void* getClientOrder(int coid){
-		printf("HERE\n");
 		sleep(5);
 	    // order related variables
 		int bookCount=0;
@@ -99,7 +99,7 @@ void* getClientOrder(int coid){
 	    int* classTimeMin = malloc(2 * sizeof(int));
 	    send_order_msg_t send_order_msg;
 	    int ret_status;
-	    char* store_msg;
+	    char store_msg[MAX_STRING_LEN];
 
 		// predetermined to only let a client order 2 books in one session
 		do {
@@ -108,7 +108,6 @@ void* getClientOrder(int coid){
 			char* inputs = malloc(17 * sizeof(char));
 			int orderNum, odDay, odMon, odYr, cdDay, cdMon, cdYr, ctHr, ctMin;
 			//for later: always reads in 4 (after enter it doesn't count how many fields??)
-			printf("PRE scanned inputs %s.\n", inputs);
 			int scanned = scanf(" %c %c%c/%c%c/%c%c %c%c/%c%c/%c%c %c%c:%c%c", &inputs[0], &inputs[1], &inputs[2], &inputs[3], &inputs[4], &inputs[5], &inputs[6], &inputs[7], &inputs[8], &inputs[9], &inputs[10], &inputs[11], &inputs[12], &inputs[13], &inputs[14], &inputs[15], &inputs[16]);
 			if (scanned!=17) {
 				printf("Please enter all fields to complete your order.\n");
@@ -116,8 +115,6 @@ void* getClientOrder(int coid){
 				printf("Scanned inputs %s.\n", inputs);
 				fflush(stdin);
 			} else {
-				printf("in else: Scanned %d.\n", scanned);
-				printf("in else: Scanned inputs %s.\n", inputs);
 				printf("book count=%d\n", bookCount);
 				orderNum = inputs[0]- '0';
 				odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
@@ -128,8 +125,6 @@ void* getClientOrder(int coid){
 				cdYr = (10 * (inputs[11] - '0' ) ) + inputs[12] - '0';
 				ctHr = (10 * (inputs[13] - '0' ) ) + inputs[14] - '0';
 				ctMin = (10 * (inputs[15] - '0' ) ) + inputs[16] - '0';
-				printf("odDay=%d\n", odDay);
-				printf("odMon=%d\n", odMon);
 				int flag=1;
 				if(odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
 					cdDay>31 || cdMon<0|| cdMon>12 || cdYr<0 || cdYr>22 || ctHr<00 || ctHr>24|| ctMin<00|| ctMin>59){
@@ -192,7 +187,6 @@ void* getClientOrder(int coid){
 		printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
 		printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
-		printf("coid=%d\n", coid);
 	   	ret_status = MsgSend(coid, &send_order_msg, sizeof(send_order_msg), &store_msg, sizeof(store_msg));
 	   	if(ret_status==-1){
 	   		printf("Error sending message to server.\n");

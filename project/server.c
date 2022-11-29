@@ -12,6 +12,7 @@
 
 #include "server.h" // defines messages between client & server
 
+
 int sortOrders(int, int);
 int sortTimes(int, int);
 
@@ -99,9 +100,11 @@ int main(int argc, char **argv){
 									}
 							}
 							qsort(sorted_orders, 3, 3*sizeof(int), sortOrders);*/
-							char* send_msg="Order received.";
+
+							char send_msg[20]="Order received.";
+							printf("send_msg=%s\n", send_msg);
 							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
-							printf("after Msg reply.\n");
+							printf("After Msg reply.\n");
 							break;
 						default:
 							printf("MsgError\n");
