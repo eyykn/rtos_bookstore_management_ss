@@ -13,16 +13,20 @@
 #define NUMTHREADS      3
 #define MAX_STRING_LEN    256
 
+int coid;
 int printMenu();
 void* getClientOrder();
 
+
+
 int main(int argc, char **argv) {
-	int coid;
-    pthread_t tids[NUMTHREADS];
+
+    //pthread_t tids[NUMTHREADS];
 
 
 
     // open connection to server
+
     coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
     printf("coid=%d\n", coid);
     if(coid ==-1){
@@ -30,19 +34,69 @@ int main(int argc, char **argv) {
     	return EXIT_FAILURE;
     }
 
+
     // print book menu for client
     printf("Welcome, please see book menu:\n");
     printMenu();
     printf("\n");
 
+    /*
+      pthread_t tid0;
+	  pthread_t tid1;
+	  pthread_t tid2;
+
+	 pthread_t  tids[] = {&tid0,&tid1,&tid2};
+	 */
+
+    pthread_t threads[NUMTHREADS];
+
+	 // pthread_create(&tid0,NULL,getClientOrder,NULL);
+
+
+	//  pthread_create(&tid1,NULL,getClientOrder,NULL);
+
+
+	 // pthread_create(&tid2,NULL,getClientOrder,NULL);
+
+
+	  for (int i = 0; i < 3; i++){
+
+		  pthread_create(&threads[i],NULL,getClientOrder,
+		  	  			NULL);
+	  }
+	  pthread_exit(NULL);
+
+	  /*
+	  for(int i=0; i<2; i++){
+	     		if(pthread_join(&tids[i], NULL)!=0){
+	     			perror("Error joining thread.");
+	     		}
+	     	}
+	     	*/
+
+
+
+
+
+    /*
+    int check = 0;
+    pthread_create(NULL, NULL, getClientOrder(), NULL);
+    check++;
+    pthread_join(thread_id, NULL);
+    pthread_create(NULL, NULL, getClientOrder(), NULL);
+    */
+
     //Create client threads
     //SEG FAULTING rn before second thread creation
+
+    /*
    	for(int i=0; i<NUMTHREADS; i++) {
    		printf("Numthread %d\n", i);
-   		int retVal=pthread_create(&tids[i], NULL, getClientOrder(coid), NULL);
+   		int retVal=pthread_create(&tids[i], NULL, getClientOrder(1), NULL);
    		if(retVal!=0){
    			printf("Creation of thread failed.\n");
    		}
+   		pthread_join(tids[i], NULL);
    	}
 
    	//Ensures main waits for each thread to terminate before exiting
@@ -51,6 +105,9 @@ int main(int argc, char **argv) {
    			perror("Error joining thread.");
    		}
    	}
+   	*/
+
+	pthread_exit(NULL);
 
 	return EXIT_SUCCESS;
 }
@@ -88,9 +145,15 @@ int printMenu() {
 	}
 	return EXIT_SUCCESS;
 }
-void* getClientOrder(int coid){
+
+void* getClientOrder(){
+
 		printf("In getClientOrder()\n");
+		printf("coid=%d\n", coid);
+		//printf("tid: %d\n",tid);
+
 	    // order related variables
+
 		int bookCount=0;
 		int orderNums[2];
 		printf("before malloc\n");
@@ -191,8 +254,8 @@ void* getClientOrder(int coid){
 
 		// copy paste for sample input: 1 12/12/12 12/12/12 11:11
 		// copy paste for sample input w/ zeros: 1 02/02/02 02/02/02 01:01
-		printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
-		printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
+		//printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
+		//printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
 		printf("The size of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo));
 		printf("The #elements in send_order_msg.orderInfo is %zu \n",sizeof(send_order_msg.orderInfo)/sizeof(int));
@@ -222,8 +285,8 @@ void* getClientOrder(int coid){
 	   	free(classTimeHr);
 	   	free(classTimeMin);
 
+
 		return (NULL);
 }
-
 
 
