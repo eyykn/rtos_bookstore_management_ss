@@ -21,8 +21,7 @@ void* getClientOrder();
 
 int main(int argc, char **argv) {
 
-    //pthread_t tids[NUMTHREADS];
-
+    pthread_t tids[NUMTHREADS];
 
 
     // open connection to server
@@ -35,86 +34,17 @@ int main(int argc, char **argv) {
     }
 
 
-
-    // print book menu for client
-    printf("Welcome, please see book menu:\n");
-    printMenu();
-    printf("\n");
-
-
-
-    /*
-      pthread_t tid0;
-	  pthread_t tid1;
-	  pthread_t tid2;
-
-	 pthread_t  tids[] = {&tid0,&tid1,&tid2};
-	 */
-
-    pthread_t threads[NUMTHREADS];
-
-	 // pthread_create(&tid0,NULL,getClientOrder,NULL);
-
-
-	//  pthread_create(&tid1,NULL,getClientOrder,NULL);
-
-
-	 // pthread_create(&tid2,NULL,getClientOrder,NULL);
-
-
-	  for (int i = 0; i < 3; i++){
+    for (int i = 0; i < NUMTHREADS; i++){
 		  printf("Welcome, please see book menu:\n");
 		  printMenu();
 		  printf("\n");
-
-		  pthread_create(&threads[i],NULL,getClientOrder,
-		  	  			NULL);
+		  printf("Thread #%d\n", i);
+		  pthread_create(&tids[i], NULL, getClientOrder, NULL);
+		  if(pthread_join(tids[i], NULL)!=0){
+			  perror("Error joining thread.");
+		  }
 	  }
 	  pthread_exit(NULL);
-
-	  /*
-	  for(int i=0; i<2; i++){
-	     		if(pthread_join(&tids[i], NULL)!=0){
-	     			perror("Error joining thread.");
-	     		}
-	     	}
-	     	*/
-
-
-
-
-
-    /*
-    int check = 0;
-    pthread_create(NULL, NULL, getClientOrder(), NULL);
-    check++;
-    pthread_join(thread_id, NULL);
-    pthread_create(NULL, NULL, getClientOrder(), NULL);
-    */
-
-
-    //Create client threads
-    //SEG FAULTING rn before second thread creation
-
-    /*
-   	for(int i=0; i<NUMTHREADS; i++) {
-   		printf("Numthread %d\n", i);
-   		int retVal=pthread_create(&tids[i], NULL, getClientOrder(1), NULL);
-   		if(retVal!=0){
-   			printf("Creation of thread failed.\n");
-   		}
-   		pthread_join(tids[i], NULL);
-   	}
-
-   	//Ensures main waits for each thread to terminate before exiting
-   	for(int i=0; i<NUMTHREADS; i++){
-   		if(pthread_join(tids[i], NULL)!=0){
-   			perror("Error joining thread.");
-   		}
-   	}
-   	*/
-
-	pthread_exit(NULL);
 
 	return EXIT_SUCCESS;
 }
