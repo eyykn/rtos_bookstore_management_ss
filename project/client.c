@@ -187,6 +187,18 @@ void* getClientOrder(int coid){
 		printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
 		printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
+		printf("The size of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo));
+		printf("The #elements in send_order_msg.orderInfo is %zu \n",sizeof(send_order_msg.orderInfo)/sizeof(int));
+		printf("The #elements in each row of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo[0])/sizeof(int));
+		printf("The #rows of send_order_msg.orderInfo is %zu \n",
+		sizeof(send_order_msg.orderInfo)/sizeof(send_order_msg.orderInfo[0]));
+		for (int r=0; r<2; r++) {
+		 for (int c=0; c<9; c++)
+			 printf("%02d ", send_order_msg.orderInfo[r][c]);
+		 printf("\n");
+		}
+		printf("\n");
+
 	   	ret_status = MsgSend(coid, &send_order_msg, sizeof(send_order_msg), &store_msg, sizeof(store_msg));
 	   	if(ret_status==-1){
 	   		printf("Error sending message to server.\n");
