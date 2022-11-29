@@ -84,16 +84,11 @@ int printMenu() {
 }
 
 void* getClientOrder(){
-
-		printf("In getClientOrder()\n");
-		printf("coid=%d\n", coid);
-		//printf("tid: %d\n",tid);
-
 	    // order related variables
 
 		int bookCount=0;
 		int orderNums[2];
-		printf("before malloc\n");
+
 	    int* orderDateDay = malloc(4 * sizeof(int));
 	    int* orderDateMon = malloc(4 * sizeof(int));
 	    int* orderDateYr = malloc(4 * sizeof(int));
@@ -102,12 +97,12 @@ void* getClientOrder(){
 	    int* classDateYr = malloc(4 * sizeof(int));
 	    int* classTimeHr = malloc(2 * sizeof(int));
 	    int* classTimeMin = malloc(2 * sizeof(int));
-	    printf("after malloc\n");
+
 	    send_order_msg_t send_order_msg;
-	    printf("after send order msg\n");
+
 	    int ret_status;
 	    char store_msg[MAX_STRING_LEN];
-	    printf("before do\n");
+
 		// predetermined to only let a client order 2 books in one session
 		do {
 			printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM ->\n");
@@ -122,7 +117,6 @@ void* getClientOrder(){
 				printf("Scanned inputs %s.\n", inputs);
 				fflush(stdin);
 			} else {
-				printf("book count=%d\n", bookCount);
 				orderNum = inputs[0]- '0';
 				odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
 				odMon = (10 * (inputs[3] - '0' ) ) + inputs[4] - '0';
@@ -156,7 +150,6 @@ void* getClientOrder(){
 					}
 				}
 				if(flag){
-					printf("in correct path.\n");
 					// correct input path
 					orderNums[bookCount] = orderNum;
 					orderDateDay[bookCount] = odDay;
@@ -194,11 +187,11 @@ void* getClientOrder(){
 		//printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
 		//printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
-		printf("The size of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo));
+		/*printf("The size of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo));
 		printf("The #elements in send_order_msg.orderInfo is %zu \n",sizeof(send_order_msg.orderInfo)/sizeof(int));
 		printf("The #elements in each row of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo[0])/sizeof(int));
 		printf("The #rows of send_order_msg.orderInfo is %zu \n",
-		sizeof(send_order_msg.orderInfo)/sizeof(send_order_msg.orderInfo[0]));
+		sizeof(send_order_msg.orderInfo)/sizeof(send_order_msg.orderInfo[0]));*/
 		for (int r=0; r<2; r++) {
 		 for (int c=0; c<9; c++)
 			 printf("%02d ", send_order_msg.orderInfo[r][c]);
@@ -211,7 +204,7 @@ void* getClientOrder(){
 	   		printf("Error sending message to server.\n");
 	   		return (NULL);
 	   	}
-	   	printf( "Store has responded to order: %s\n", store_msg);
+	   	printf( "Store has responded to order: %s\n\n", store_msg);
 	   	//free allocated memory
 	   	free(orderDateDay);
 	   	free(orderDateMon);
