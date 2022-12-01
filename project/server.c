@@ -87,7 +87,7 @@ int main(int argc, char **argv){
 								for(int j=0; j<10; j++){
 									//populate client orders 2D array
 									client_orders[order_num][j]=msg.send_order_msg.orderInfo[i][j];
-									printf("client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
+									printf("SEND_ORDER_MSG_TYPE client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
 								}
 								order_num++;
 							}
@@ -105,14 +105,25 @@ int main(int argc, char **argv){
 							foundCount = 0;
 							memset(i_indexes, 0, sizeof i_indexes);
 
-							printf("pre sort\n");
-							qsort(client_orders, 10, sizeof client_orders[0], sortOrders);
+
+							// print pre-sorted
+							printf("pre sort:\n");
+							for(int i=0; i<2; i++){
+								for(int j=0; j<10; j++){
+									printf("GET_ORDER_CONF_MSG_TYPE client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+								}
+							}
+
+
+							if (msg.get_order_conf_msg.threadId == 0) {
+								qsort(client_orders, 10, sizeof client_orders[0], sortOrders);
+							}
 
 							// print sorted
 							printf("post sort, sorted orders:\n");
 							for(int i=0; i<2; i++){
 								for(int j=0; j<10; j++){
-									printf("client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+									printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
 								}
 							}
 
@@ -147,25 +158,28 @@ int main(int argc, char **argv){
 
 // https://cboard.cprogramming.com/c-programming/51935-qsort-multi-dimensional-arrays.html
 // https://stackoverflow.com/questions/17202178/c-qsort-with-dynamic-n-by-2-multi-dimensional-array
+// https://stackoverflow.com/questions/27284185/how-does-the-compare-function-in-qsort-work
 int sortOrders(const void *d1, const void *d2) {
-    const int (*a)[10] = d1;
-    const int (*b)[10] = d2;
-    if ((*a)[3] < (*b)[3] ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] < (*b)[3])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] < (*b)[2])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] < (*b)[8])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] < (*b)[9])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] < (*b)[7])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] < (*b)[6])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] == (*b)[6])&&((*a)[5] < (*b)[5]))) return -1;
-	if ((*a)[3] > (*b)[3] ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] > (*b)[3])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] > (*b)[2])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] > (*b)[8])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] > (*b)[9])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] > (*b)[7])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] > (*b)[6])) ||
-		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] == (*b)[6])&&((*a)[5] > (*b)[5]))) return +1;
-    return 0;
+	// something about the casting here is broken
+	int* a = (int*)d1;
+	int* b = (int*)d2;
+    printf("in sort\n %d", a[4]);
+	int classYearDiff = a[4] - b[4];
+	if (classYearDiff) return classYearDiff;
+	int classMonthDiff = a[3] - b[3];
+	if (classMonthDiff) return classMonthDiff;
+	int classDayDiff = a[2] - b[2];
+	if (classDayDiff) return classDayDiff;
+	int classHourDiff = a[9] - b[9];
+	if (classHourDiff) return classHourDiff;
+	int classMinDiff = a[8] - b[8];
+	if (classMinDiff) return classMinDiff;
+	int orderYearDiff = a[7] - b[7];
+	if (orderYearDiff) return orderYearDiff;
+	int orderMonthDiff = a[6] - b[6];
+	if (orderMonthDiff) return orderMonthDiff;
+	int orderDayDiff = a[5] - b[5];
+	if (orderDayDiff) return orderDayDiff;
+	return a[0] - b[0]; // if all is same thread id
 }
 

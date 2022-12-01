@@ -10,7 +10,8 @@
 #include <pthread.h>
 #include "server.h"
 
-#define NUMTHREADS      3
+// change back to 3 later
+#define NUMTHREADS      2
 
 int coid;
 int currthread;
