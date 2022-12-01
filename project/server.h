@@ -10,6 +10,7 @@
 #define SERVER_NAME "server_name"
 #define MAX_BOOKS 2
 #define BOOK_COUNT 5
+#define MAX_STRING_LEN    256
 
 
 enum FRUIT_ENUM {
@@ -21,8 +22,14 @@ static const char *BOOK_MENU[] = {
 };
 
 #define SEND_ORDER_MSG_TYPE (_IO_MAX+200)
+#define GET_ORDER_CONF_MSG_TYPE (_IO_MAX+201)
 
 typedef struct send_order_msg {
 	uint16_t type;
-	int orderInfo[2][9];
+	int orderInfo[2][10];
 } send_order_msg_t;
+
+typedef struct get_order_conf_msg {
+	uint16_t type;
+	int threadId;
+} get_order_conf_msg_t;

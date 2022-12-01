@@ -11,9 +11,9 @@
 #include "server.h"
 
 #define NUMTHREADS      3
-#define MAX_STRING_LEN    256
 
 int coid;
+int currthread;
 int printMenu();
 void* getClientOrder();
 
@@ -22,10 +22,13 @@ void* getClientOrder();
 int main(int argc, char **argv) {
 
     pthread_t tids[NUMTHREADS];
+	get_order_conf_msg_t get_order_conf_msg;
+    int ret_status;
+    char store_msg[MAX_STRING_LEN];
 
+    currthread = -1;
 
     // open connection to server
-
     coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
     printf("coid=%d\n", coid);
     if(coid ==-1){
@@ -35,16 +38,28 @@ int main(int argc, char **argv) {
 
 
     for (int i = 0; i < NUMTHREADS; i++){
-		  printf("Welcome, please see book menu:\n");
-		  printMenu();
-		  printf("\n");
-		  printf("Thread #%d\n", i);
-		  pthread_create(&tids[i], NULL, getClientOrder, NULL);
-		  if(pthread_join(tids[i], NULL)!=0){
-			  perror("Error joining thread.");
-		  }
-	  }
-	  pthread_exit(NULL);
+		printf("Welcome, please see book menu:\n");
+		printMenu();
+		printf("\n");
+		printf("Thread #%d\n", i);
+		pthread_create(&tids[i], NULL, getClientOrder, NULL);
+		if(pthread_join(tids[i], NULL)!=0){
+			perror("Error joining thread.");
+		}
+    }
+
+    for (int i = 0; i < NUMTHREADS; i++){
+    	get_order_conf_msg.type = GET_ORDER_CONF_MSG_TYPE;
+    	get_order_conf_msg.threadId = i;
+    	ret_status = MsgSend(coid, &get_order_conf_msg, sizeof(get_order_conf_msg), &store_msg, sizeof(store_msg));
+		if(ret_status==-1){
+			printf("Error sending message to server.\n");
+			break;
+		}
+		printf( "Store has responded to order confirmation request: %s\n\n", store_msg);
+	}
+
+	pthread_exit(NULL);
 
 	return EXIT_SUCCESS;
 }
@@ -102,6 +117,7 @@ void* getClientOrder(){
 
 	    int ret_status;
 	    char store_msg[MAX_STRING_LEN];
+	   	currthread++;
 
 		// predetermined to only let a client order 2 books in one session
 		do {
@@ -170,30 +186,23 @@ void* getClientOrder(){
 		// build message
 		send_order_msg.type = SEND_ORDER_MSG_TYPE;
 		for (int i=0; i< MAX_BOOKS; i++) {
-			send_order_msg.orderInfo[i][0] = orderNums[i]-1;
-			send_order_msg.orderInfo[i][1] = orderDateDay[i];
-			send_order_msg.orderInfo[i][2] = orderDateMon[i];
-			send_order_msg.orderInfo[i][3] = orderDateYr[i];
-			send_order_msg.orderInfo[i][4] = classDateDay[i];
-			send_order_msg.orderInfo[i][5] = classDateMon[i];
-			send_order_msg.orderInfo[i][6] = classDateYr[i];
-			send_order_msg.orderInfo[i][7] = classTimeHr[i];
-			send_order_msg.orderInfo[i][8] = classTimeMin[i];
-
+			send_order_msg.orderInfo[i][0] = currthread;
+			send_order_msg.orderInfo[i][1] = orderNums[i]-1;
+			send_order_msg.orderInfo[i][2] = orderDateDay[i];
+			send_order_msg.orderInfo[i][3] = orderDateMon[i];
+			send_order_msg.orderInfo[i][4] = orderDateYr[i];
+			send_order_msg.orderInfo[i][5] = classDateDay[i];
+			send_order_msg.orderInfo[i][6] = classDateMon[i];
+			send_order_msg.orderInfo[i][7] = classDateYr[i];
+			send_order_msg.orderInfo[i][8] = classTimeHr[i];
+			send_order_msg.orderInfo[i][9] = classTimeMin[i];
 		}
 
 		// copy paste for sample input: 1 12/12/12 12/12/12 11:11
 		// copy paste for sample input w/ zeros: 1 02/02/02 02/02/02 01:01
-		//printf("order info for 1st order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[0][0], send_order_msg.orderInfo[0][1], send_order_msg.orderInfo[0][2], send_order_msg.orderInfo[0][3], send_order_msg.orderInfo[0][4], send_order_msg.orderInfo[0][5], send_order_msg.orderInfo[0][6], send_order_msg.orderInfo[0][7], send_order_msg.orderInfo[0][8]);
-		//printf("order info for 2nd order: %d %d %d %d %d %d %d %d %d\n", send_order_msg.orderInfo[1][0], send_order_msg.orderInfo[1][1], send_order_msg.orderInfo[1][2], send_order_msg.orderInfo[1][3], send_order_msg.orderInfo[1][4], send_order_msg.orderInfo[1][5], send_order_msg.orderInfo[1][6], send_order_msg.orderInfo[1][7], send_order_msg.orderInfo[1][8]);
 
-		/*printf("The size of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo));
-		printf("The #elements in send_order_msg.orderInfo is %zu \n",sizeof(send_order_msg.orderInfo)/sizeof(int));
-		printf("The #elements in each row of send_order_msg.orderInfo is %zu \n", sizeof(send_order_msg.orderInfo[0])/sizeof(int));
-		printf("The #rows of send_order_msg.orderInfo is %zu \n",
-		sizeof(send_order_msg.orderInfo)/sizeof(send_order_msg.orderInfo[0]));*/
 		for (int r=0; r<2; r++) {
-		 for (int c=0; c<9; c++)
+		 for (int c=0; c<10; c++)
 			 printf("%02d ", send_order_msg.orderInfo[r][c]);
 		 printf("\n");
 		}
@@ -204,7 +213,7 @@ void* getClientOrder(){
 	   		printf("Error sending message to server.\n");
 	   		return (NULL);
 	   	}
-	   	printf( "Store has responded to order: %s\n\n", store_msg);
+	   	printf("Store has responded to order: %s\n\n", store_msg);
 	   	//free allocated memory
 	   	free(orderDateDay);
 	   	free(orderDateMon);
@@ -214,7 +223,6 @@ void* getClientOrder(){
 	   	free(classDateYr);
 	   	free(classTimeHr);
 	   	free(classTimeMin);
-
 
 		return (NULL);
 }

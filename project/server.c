@@ -13,23 +13,26 @@
 #include "server.h" // defines messages between client & server
 
 
-int sortOrders(int, int);
-int sortTimes(int, int);
+int sortOrders(const void*, const void*);
 
 typedef union {
 	uint16_t type;
 	struct _pulse pulse;
 	send_order_msg_t send_order_msg;
+	get_order_conf_msg_t get_order_conf_msg;
 } recv_buf_t;
 
 int main(int argc, char **argv){
 
 	name_attach_t *attach;
-	int rcvid, client_pid;
+	int rcvid;
 	int order_num=0;
 	struct _msg_info info;
 	recv_buf_t msg;
-	int client_orders[10][9];
+	int client_orders[10][10];
+	char send_msg[MAX_STRING_LEN];
+	int foundCount = 0;
+	int i_indexes[2];
 
 	// connect
 	attach=name_attach(NULL, SERVER_NAME, 0);
@@ -65,6 +68,7 @@ int main(int argc, char **argv){
 				 }
 			} else {
 				//Message
+				printf("Received message is a message not pulse.\n");
 				if (rcvid == -1) {
 					perror("MsgReceive");
 					exit(EXIT_FAILURE);
@@ -72,41 +76,63 @@ int main(int argc, char **argv){
 				} else if (rcvid > 0) {
 					switch(msg.type) {
 						case SEND_ORDER_MSG_TYPE:
-							client_pid = info.pid;
+							printf("Received message type is SEND_ORDER_MSG_TYPE\n");
 							//Display msg received from client
 							printf("Order Info received from client: \n");
-							printf("Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[0][0], msg.send_order_msg.orderInfo[0][1], msg.send_order_msg.orderInfo[0][2], msg.send_order_msg.orderInfo[0][3],  msg.send_order_msg.orderInfo[0][4],  msg.send_order_msg.orderInfo[0][5],  msg.send_order_msg.orderInfo[0][6],  msg.send_order_msg.orderInfo[0][7],  msg.send_order_msg.orderInfo[0][8]);
-							printf("Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[1][0], msg.send_order_msg.orderInfo[1][1], msg.send_order_msg.orderInfo[1][2], msg.send_order_msg.orderInfo[1][3], msg.send_order_msg.orderInfo[1][4], msg.send_order_msg.orderInfo[1][5],  msg.send_order_msg.orderInfo[1][6],  msg.send_order_msg.orderInfo[1][7],  msg.send_order_msg.orderInfo[1][8]);
+							printf("Tid %d, Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[0][0], msg.send_order_msg.orderInfo[0][1], msg.send_order_msg.orderInfo[0][2], msg.send_order_msg.orderInfo[0][3],  msg.send_order_msg.orderInfo[0][4],  msg.send_order_msg.orderInfo[0][5],  msg.send_order_msg.orderInfo[0][6],  msg.send_order_msg.orderInfo[0][7],  msg.send_order_msg.orderInfo[0][8], msg.send_order_msg.orderInfo[0][9]);
+							printf("Tid %d, Book Num=%d, Order Date (DDMMYY)=%d%d%d, Class Date (DDMMYY)=%d%d%d, Class Time (HHMM)=%d%d\n", msg.send_order_msg.orderInfo[1][0], msg.send_order_msg.orderInfo[1][1], msg.send_order_msg.orderInfo[1][2], msg.send_order_msg.orderInfo[1][3], msg.send_order_msg.orderInfo[1][4], msg.send_order_msg.orderInfo[1][5],  msg.send_order_msg.orderInfo[1][6],  msg.send_order_msg.orderInfo[1][7],  msg.send_order_msg.orderInfo[1][8], msg.send_order_msg.orderInfo[1][9]);
 
 							//Store order info for client
 							for(int i=0; i<2; i++){
-								client_orders[order_num][0]=client_pid;
-								for(int j=0; j<9; j++){
+								for(int j=0; j<10; j++){
 									//populate client orders 2D array
-									client_orders[order_num][j+1]=msg.send_order_msg.orderInfo[i][j];
-									printf("client_orders[%d][%d]=%d\n", order_num, j+1, client_orders[order_num][j+1]);
+									client_orders[order_num][j]=msg.send_order_msg.orderInfo[i][j];
+									printf("client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
 								}
 								order_num++;
 							}
 
-							//Figure out priorities for orders- sort in order of: class date->class time->order date
+							memset(send_msg, 0, sizeof send_msg);
+							sprintf(send_msg, "Order received for: %d", msg.send_order_msg.orderInfo[0][0]);
 
-							/*for(int i=0; i<order_num-1; i++){
-									printf("date1= %d%d%d, date 2= %d%d%d\n",client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
-									int sortVal=sortOrders(client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i+1][4], client_orders[i+1][5], client_orders[i+1][6]);
-
-									for(int j=0; j<3; j++){
-										sorted_orders[i][j]=client_orders[i][i+4];
-										sorted_orders[i+1][j]=client_orders[i+1][i+4];
-									}
-							}
-							qsort(sorted_orders, 3, 3*sizeof(int), sortOrders);*/
-
-							char send_msg[20]="Order received.";
 							printf("send_msg=%s\n", send_msg);
 							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
 							printf("After Msg reply.\n");
 							break;
+
+						case GET_ORDER_CONF_MSG_TYPE:
+							printf("Received message type is GET_ORDER_CONF_MSG_TYPE\n");
+							foundCount = 0;
+							memset(i_indexes, 0, sizeof i_indexes);
+
+							printf("pre sort\n");
+							qsort(client_orders, 10, sizeof client_orders[0], sortOrders);
+
+							// print sorted
+							printf("post sort, sorted orders:\n");
+							for(int i=0; i<2; i++){
+								for(int j=0; j<10; j++){
+									printf("client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+								}
+							}
+
+
+							for(int i=0; i<10; i++){
+								printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
+								if (client_orders[i][0] == msg.get_order_conf_msg.threadId) {
+									printf("in if\n");
+									i_indexes[foundCount] = i;
+								}
+								foundCount++;
+							}
+
+							printf("indices found for %d: %d, %d\n", msg.get_order_conf_msg.threadId,i_indexes[0], i_indexes[1]);
+
+							memset(send_msg, 0, sizeof send_msg);
+							sprintf(send_msg, "Orders confirmed for: %d -> (1) Book ordered %s with order priority: %d (2) Book ordered %s with order priority: %d\n", client_orders[i_indexes[0]][0], BOOK_MENU[client_orders[i_indexes[0]][1]], i_indexes[0], BOOK_MENU[client_orders[i_indexes[1]][1]], i_indexes[1]);
+							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
+							break;
+
 						default:
 							printf("MsgError\n");
 							MsgError(rcvid, -1);
@@ -119,30 +145,27 @@ int main(int argc, char **argv){
 		}
 }
 
-//Sorts orders by date
-int sortOrders(int date1, int date2) {
-	//To do: Figure out how to split date by DD, MM, YY and set the variables below
-	int y1, y2;
-	int m1, m2;
-	int d1, d2;
-
-	int yearDiff = y1 - y2;
-	if (yearDiff) return 0;
-	int monthDiff = m1 - m2;
-	if (monthDiff) return 0;
-	int dayDiff= d1-d2;
-	if(dayDiff) return 0;
-	return 1;
+// https://cboard.cprogramming.com/c-programming/51935-qsort-multi-dimensional-arrays.html
+// https://stackoverflow.com/questions/17202178/c-qsort-with-dynamic-n-by-2-multi-dimensional-array
+int sortOrders(const void *d1, const void *d2) {
+    const int (*a)[10] = d1;
+    const int (*b)[10] = d2;
+    if ((*a)[3] < (*b)[3] ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] < (*b)[3])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] < (*b)[2])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] < (*b)[8])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] < (*b)[9])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] < (*b)[7])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] < (*b)[6])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] == (*b)[6])&&((*a)[5] < (*b)[5]))) return -1;
+	if ((*a)[3] > (*b)[3] ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] > (*b)[3])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] > (*b)[2])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] > (*b)[8])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] > (*b)[9])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] > (*b)[7])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] > (*b)[6])) ||
+		(((*a)[4] == (*b)[4])&&((*a)[3] == (*b)[3])&&((*a)[2] == (*b)[2])&&((*a)[8] == (*b)[8])&&((*a)[9] == (*b)[9])&&((*a)[7] == (*b)[7])&&((*a)[6] == (*b)[6])&&((*a)[5] > (*b)[5]))) return +1;
+    return 0;
 }
 
-int sortTimes(int time1, int time2){
-	//To do: Figure out how to split Hr and Min and set the variables below
-	int h1, h2;
-	int m1, m2;
-
-	int hourDiff=h1-h2;
-	if(hourDiff) return 0;
-	int minDiff=m1-m2;
-	if (minDiff) return 0;
-	return 1;
-}
