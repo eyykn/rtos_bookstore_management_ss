@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     int ret_status;
     char store_msg[MAX_STRING_LEN];
 
-    currthread = -1;
+    currthread = 0;
 
     // open connection to server
     coid = name_open(SERVER_NAME, ND_LOCAL_NODE);
@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
 
 
     for (int i = 0; i < NUMTHREADS; i++){
+    	currthread = i;
 		printf("Welcome, please see book menu:\n");
 		printMenu();
 		printf("\n");
@@ -118,7 +119,6 @@ void* getClientOrder(){
 
 	    int ret_status;
 	    char store_msg[MAX_STRING_LEN];
-	   	currthread++;
 
 		// predetermined to only let a client order 2 books in one session
 		do {
@@ -199,8 +199,16 @@ void* getClientOrder(){
 			send_order_msg.orderInfo[i][9] = classTimeMin[i];
 		}
 
-		// copy paste for sample input: 1 12/12/12 12/12/12 11:11
-		// copy paste for sample input w/ zeros: 1 02/02/02 02/02/02 01:01
+		/* test inputs for sort
+		 *
+		 * 1 13/12/12 10/12/12 11:11
+		 * 3 13/12/12 11/12/12 11:11
+		 * 4 11/05/12 11/12/12 09:11
+		 * 5 11/05/12 12/12/12 09:11
+		 * 1 02/02/12 01/02/12 08:00
+		 * 2 02/02/12 01/02/12 08:01
+		 * */
+
 
 		for (int r=0; r<2; r++) {
 		 for (int c=0; c<10; c++)

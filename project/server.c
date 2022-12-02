@@ -88,8 +88,6 @@ int main(int argc, char **argv){
 								for(int j=0; j<10; j++){
 									//populate client orders 2D array
 									client_orders[order_num][j]=msg.send_order_msg.orderInfo[i][j];
-									//This works now!
-									//printf("SEND_ORDER_MSG_TYPE client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
 								}
 								order_num++;
 							}
@@ -107,43 +105,34 @@ int main(int argc, char **argv){
 							foundCount = 0;
 							memset(i_indexes, 0, sizeof i_indexes);
 
-
-							// print pre-sorted
-							printf("pre sort:\n");
-							for(int i=0; i<2; i++){
-								for(int j=0; j<10; j++){
-									//works now!
-									//printf("GET_ORDER_CONF_MSG_TYPE client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
-								}
+							printf("pre sort, NOT sorted orders:\n");
+							for(int i=0; i<6; i++){
+								printf("UNSORTED client_orders[%i]%d %d %d %d %d %d %d %d %d %d\n", i, client_orders[i][0], client_orders[i][1], client_orders[i][2], client_orders[i][3], client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i][7], client_orders[i][8], client_orders[i][9]);
 							}
 
 
-							if (msg.get_order_conf_msg.threadId == 0) {
-								qsort(client_orders, 6, sizeof(client_orders[0]), sortOrders);
-							}
+							qsort(client_orders, 6, sizeof(client_orders[0]), sortOrders);
 
 							// print sorted
 							printf("post sort, sorted orders:\n");
-							for(int i=0; i<2; i++){
-								for(int j=0; j<10; j++){
-									printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
-								}
+							for(int i=0; i<6; i++){
+								printf("sorted client_orders[%i]%d %d %d %d %d %d %d %d %d %d\n", i, client_orders[i][0], client_orders[i][1], client_orders[i][2], client_orders[i][3], client_orders[i][4], client_orders[i][5], client_orders[i][6], client_orders[i][7], client_orders[i][8], client_orders[i][9]);
 							}
 
 
 							for(int i=0; i<6; i++){
-								printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
+								// printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.threadId) {
-									//printf("in if\n");
+									printf("in if foundCount %d, i %d\n", foundCount, i);
 									i_indexes[foundCount] = i;
+									foundCount++;
 								}
-								foundCount++;
 							}
 
 							printf("indices found for %d: %d, %d\n", msg.get_order_conf_msg.threadId,i_indexes[0], i_indexes[1]);
 
 							memset(send_msg, 0, sizeof send_msg);
-							sprintf(send_msg, "Orders confirmed for: %d -> (1) Book ordered %s with order priority: %d (2) Book ordered %s with order priority: %d\n", client_orders[i_indexes[0]][0], BOOK_MENU[client_orders[i_indexes[0]][1]], i_indexes[0], BOOK_MENU[client_orders[i_indexes[1]][1]], i_indexes[1]);
+							sprintf(send_msg, "Orders confirmed for: %d -> (1) Book ordered %s with order priority: %d | (2) Book ordered %s with order priority: %d\n", client_orders[i_indexes[0]][0], BOOK_MENU[client_orders[i_indexes[0]][1]], i_indexes[0], BOOK_MENU[client_orders[i_indexes[1]][1]], i_indexes[1]);
 							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
 							break;
 
