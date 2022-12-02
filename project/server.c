@@ -14,6 +14,7 @@
 
 
 int sortOrders(const void*, const void*);
+int order_num=0;
 
 typedef union {
 	uint16_t type;
@@ -26,7 +27,7 @@ int main(int argc, char **argv){
 
 	name_attach_t *attach;
 	int rcvid;
-	int order_num=0;
+
 	struct _msg_info info;
 	recv_buf_t msg;
 	int client_orders[10][10];
@@ -87,7 +88,8 @@ int main(int argc, char **argv){
 								for(int j=0; j<10; j++){
 									//populate client orders 2D array
 									client_orders[order_num][j]=msg.send_order_msg.orderInfo[i][j];
-									printf("SEND_ORDER_MSG_TYPE client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
+									//This works now!
+									//printf("SEND_ORDER_MSG_TYPE client_orders[%d][%d]=%d\n", order_num, j, client_orders[order_num][j]);
 								}
 								order_num++;
 							}
@@ -110,28 +112,29 @@ int main(int argc, char **argv){
 							printf("pre sort:\n");
 							for(int i=0; i<2; i++){
 								for(int j=0; j<10; j++){
-									printf("GET_ORDER_CONF_MSG_TYPE client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+									//works now!
+									//printf("GET_ORDER_CONF_MSG_TYPE client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
 								}
 							}
 
 
 							if (msg.get_order_conf_msg.threadId == 0) {
-								qsort(client_orders, 10, sizeof client_orders[0], sortOrders);
+								qsort(client_orders, 10, sizeof(client_orders[0]), sortOrders);
 							}
 
 							// print sorted
 							printf("post sort, sorted orders:\n");
 							for(int i=0; i<2; i++){
 								for(int j=0; j<10; j++){
-									printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+									//printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
 								}
 							}
 
 
 							for(int i=0; i<10; i++){
-								printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
+								//printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.threadId) {
-									printf("in if\n");
+									//printf("in if\n");
 									i_indexes[foundCount] = i;
 								}
 								foundCount++;
@@ -161,9 +164,14 @@ int main(int argc, char **argv){
 // https://stackoverflow.com/questions/27284185/how-does-the-compare-function-in-qsort-work
 int sortOrders(const void *d1, const void *d2) {
 	// something about the casting here is broken
+	//printf("d1=%p, d2=%p\n", *(&d1), *(&d2));
 	int* a = (int*)d1;
 	int* b = (int*)d2;
-    printf("in sort\n %d", a[4]);
+	printf("CLASS YEAR D1 a[4]=%d\n", a[4]);
+	printf("CLASS YEAR D2 b[4]=%d\n", b[4]);
+	printf("CLASS MONTH D1 a[3]=%d\n", a[3]);
+	printf("CLASS MONTH D2 b[3]=%d\n", b[3]);
+    //printf("in sort\n %d", a[4]);
 	int classYearDiff = a[4] - b[4];
 	if (classYearDiff) return classYearDiff;
 	int classMonthDiff = a[3] - b[3];
