@@ -119,20 +119,20 @@ int main(int argc, char **argv){
 
 
 							if (msg.get_order_conf_msg.threadId == 0) {
-								qsort(client_orders, 10, sizeof(client_orders[0]), sortOrders);
+								qsort(client_orders, 6, sizeof(client_orders[0]), sortOrders);
 							}
 
 							// print sorted
 							printf("post sort, sorted orders:\n");
 							for(int i=0; i<2; i++){
 								for(int j=0; j<10; j++){
-									//printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
+									printf("GET_ORDER_CONF_MSG_TYPE sorted client_orders[%d][%d]=%d\n", i, j, client_orders[i][j]);
 								}
 							}
 
 
-							for(int i=0; i<10; i++){
-								//printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
+							for(int i=0; i<6; i++){
+								printf("in for client_orders[i][0], is %d and val is: %d\n", i, client_orders[i][0]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.threadId) {
 									//printf("in if\n");
 									i_indexes[foundCount] = i;
@@ -167,10 +167,11 @@ int sortOrders(const void *d1, const void *d2) {
 	//printf("d1=%p, d2=%p\n", *(&d1), *(&d2));
 	int* a = (int*)d1;
 	int* b = (int*)d2;
+	/*printf("COMPARISON\n\n");
 	printf("CLASS YEAR D1 a[4]=%d\n", a[4]);
 	printf("CLASS YEAR D2 b[4]=%d\n", b[4]);
 	printf("CLASS MONTH D1 a[3]=%d\n", a[3]);
-	printf("CLASS MONTH D2 b[3]=%d\n", b[3]);
+	printf("CLASS MONTH D2 b[3]=%d\n", b[3]);*/
     //printf("in sort\n %d", a[4]);
 	int classYearDiff = a[4] - b[4];
 	if (classYearDiff) return classYearDiff;
