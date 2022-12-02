@@ -11,7 +11,7 @@
 #include "server.h"
 
 // change back to 3 later
-#define NUMTHREADS      2
+#define NUMTHREADS      3
 
 int coid;
 int currthread;

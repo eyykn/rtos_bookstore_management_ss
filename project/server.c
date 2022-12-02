@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 
 	struct _msg_info info;
 	recv_buf_t msg;
-	int client_orders[10][10];
+	int client_orders[6][10];
 	char send_msg[MAX_STRING_LEN];
 	int foundCount = 0;
 	int i_indexes[2];
