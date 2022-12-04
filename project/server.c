@@ -98,6 +98,8 @@ int main(int argc, char **argv){
 								// increase order numbers received
 								order_num++;
 							}
+
+
 							// reset variable that holds the message that will be sent as a response to client before re-populating it
 							memset(send_msg, 0, sizeof send_msg);
 							// populate message to send with the confirmation that order was received and the client (thread number) that made the order
@@ -117,9 +119,12 @@ int main(int argc, char **argv){
 
 							for(int i=0; i<orders_expected_num; i++){
 								// find the orders of the calling thread in client orders sorted by priority through qsort
+								//printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.thread_num) {
 									// if the client thread that made the order in order has the same number as calling thread
 									i_indexes[found_count] = i;
+									printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
+									printf("i: %d\n",i);
 									found_count++;
 								}
 							}
@@ -150,31 +155,33 @@ int sortOrders(const void *d1, const void *d2) {
 	int* a = (int*)d1;
 	int* b = (int*)d2;
 	// if 2 orders being compared have different years for when the class they need the book for starts, return the earliest year
-	int classYearDiff = a[4] - b[4];
+	int classYearDiff = a[7] - b[7];
+	//printf("classYearDiff: %d\n",classYearDiff);
+	//int classYearDiff = b[7] - a[7];
 	if (classYearDiff) return classYearDiff;
 	// if 2 orders being compared have same year, compare months for when the class they need the book for starts, if they have different months return the earliest month
-	int classMonthDiff = a[3] - b[3];
+	int classMonthDiff = a[6] - b[6];
 	if (classMonthDiff) return classMonthDiff;
 	// if 2 orders being compared have same year, and same month, compare day for when the class they need the book for starts, if they have different days return the earliest day
-	int classDayDiff = a[2] - b[2];
+	int classDayDiff = a[5] - b[5];
 	if (classDayDiff) return classDayDiff;
 	// if 2 orders being compared have same year, same month, and same day, compare hour for when the class they need the book for starts, if they have different hours return the earliest hour
-	int classHourDiff = a[9] - b[9];
+	int classHourDiff = a[8] - b[8];
 	if (classHourDiff) return classHourDiff;
 	// if 2 orders being compared have same year, same month, same day, and same hour, compare minute for when the class they need the book for starts, if they have different minutes return the earliest minute
-	int classMinDiff = a[8] - b[8];
+	int classMinDiff = a[9] - b[9];
 	if (classMinDiff) return classMinDiff;
 	// if 2 orders being compared have same year, same month, same day, and same hour, and same minutes for when the class they need the book for starts
 	// compare year for when they placed the orders, if they have different years return the earliest year
-	int orderYearDiff = a[7] - b[7];
+	int orderYearDiff = a[4] - b[4];
 	if (orderYearDiff) return orderYearDiff;
 	// if 2 orders being compared have same year, same month, same day, and same hour, and same minutes for when the class they need the book for starts
 	// if 2 orders being compared, for when they placed the orders have same year, compare months, if they have different months return the earliest month
-	int orderMonthDiff = a[6] - b[6];
+	int orderMonthDiff = a[3] - b[3];
 	if (orderMonthDiff) return orderMonthDiff;
 	// if 2 orders being compared have same year, same month, same day, and same hour, and same minutes for when the class they need the book for starts
 	// if 2 orders being compared, for when they placed the orders have same year, and same month, compare days, if they have different days return the earliest day
-	int orderDayDiff = a[5] - b[5];
+	int orderDayDiff = a[2] - b[2];
 	if (orderDayDiff) return orderDayDiff;
 	// if all other information is the same between two compared orders return the earliest customer id (when the customer first ordered from the bookstore in context of bookstore's history)
 	return a[0] - b[0];
