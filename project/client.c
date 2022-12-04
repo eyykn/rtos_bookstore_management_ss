@@ -154,19 +154,18 @@ void* getClientOrder(){
 			// user instructions and hints
 			printf("Enter book number to order as X, order date as DD/MM/YY, class start as DD/MM/YY, class start time as HH:MM ->\n");
 			printf("example input: 1 01/01/01 02/02/02 09:25\n");
-
 			// scan in user information in response to above request
 			int scanned = scanf(" %c %c%c/%c%c/%c%c %c%c/%c%c/%c%c %c%c:%c%c", &inputs[0], &inputs[1], &inputs[2], &inputs[3], &inputs[4], &inputs[5], &inputs[6], &inputs[7], &inputs[8], &inputs[9], &inputs[10], &inputs[11], &inputs[12], &inputs[13], &inputs[14], &inputs[15], &inputs[16]);
 			// if scanned amount of characters doesn't match the number expected return an error message and ask user for input again
 			//Check if scanned values are integers.
 			if(!isdigit(inputs[0]) || !isdigit(inputs[1]) || !isdigit(inputs[2]) || !isdigit(inputs[3]) || !isdigit(inputs[4]) || !isdigit(inputs[5]) || !isdigit(inputs[6]) || !isdigit(inputs[7]) || !isdigit(inputs[8]) || !isdigit(inputs[9]) || !isdigit(inputs[10]) || !isdigit(inputs[11]) || !isdigit(inputs[12]) || !isdigit(inputs[13]) || !isdigit(inputs[14]) || !isdigit(inputs[15]) || !isdigit(inputs[16])){
-				if(inputs[0]=='/' ||inputs[1]=='/' || inputs[2]=='/' || inputs[3]=='/' || inputs[4]=='/' || inputs[5]=='/' || inputs[6]=='/' || inputs[7]=='/' || inputs[8]=='/' || inputs[9]=='/' || inputs[10]=='/' || inputs[11]=='/' || inputs[12]=='/' || inputs[13]=='/' || inputs[14]=='/' || inputs[15]=='/' || inputs[16]=='/'){
+				if(inputs[0]=='/' ||inputs[1]=='/' || inputs[2]=='/' || inputs[3]=='/' || inputs[4]=='/' || inputs[5]=='/' || inputs[6]=='/' || inputs[7]=='/' || inputs[8]=='/' || inputs[9]=='/' || inputs[10]=='/' || inputs[11]=='/' || inputs[12]=='/' || inputs[13]=='/' || inputs[14]=='/' || inputs[15]=='/' || inputs[16]=='/' ||inputs[0]==':' ||inputs[1]==':' || inputs[2]==':' || inputs[3]==':' || inputs[4]==':' || inputs[5]==':' || inputs[6]==':' || inputs[7]==':' || inputs[8]==':' || inputs[9]==':' || inputs[10]==':' || inputs[11]==':' || inputs[12]==':' || inputs[13]==':' || inputs[14]==':' || inputs[15]==':' || inputs[16]==':'){
 					printf("Please ensure 2 digits are entered for DD MM YY values.\n");
-
-				}else{printf("Please ensure all inputs are digits.\n");
-					printf("Scanned=%d\n", scanned);
+				}else{
+					printf("Please ensure all inputs are digits.\n");
 				}
-				fflush(stdin);
+				int c;
+				while ((c = getchar()) != '\n' && c != EOF);
 			}else{
 
 				if (scanned!=17) {
@@ -219,7 +218,7 @@ void* getClientOrder(){
 							flag=0;
 						}
 					}
-					// If no logic errors for input is found then add order information to the array that will be sent as a request to the bookstore server
+					// If no logic errors for input are found then add order information to the array that will be sent as a request to the bookstore server
 					if(flag){
 						order_nums[book_count] = orderNum;
 						order_date_day[book_count] = odDay;
