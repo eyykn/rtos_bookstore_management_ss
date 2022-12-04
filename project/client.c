@@ -9,6 +9,7 @@
 #include <sys/netmgr.h>
 #include <pthread.h>
 #include "server.h"
+#include <ctype.h>
 
 // global variables
 int coid;
@@ -156,69 +157,83 @@ void* getClientOrder(){
 			// scan in user information in response to above request
 			int scanned = scanf(" %c %c%c/%c%c/%c%c %c%c/%c%c/%c%c %c%c:%c%c", &inputs[0], &inputs[1], &inputs[2], &inputs[3], &inputs[4], &inputs[5], &inputs[6], &inputs[7], &inputs[8], &inputs[9], &inputs[10], &inputs[11], &inputs[12], &inputs[13], &inputs[14], &inputs[15], &inputs[16]);
 			// if scanned amount of characters doesn't match the number expected return an error message and ask user for input again
-			if (scanned!=17) {
-				// FOR OUR GROUP: Doesn't work, after error is made once when re-prompted still doesn't accept input even if correct
-				printf("Please enter all fields to complete your order.\n");
-				printf("Scanned %d.\n", scanned); // remove when fixed
-				printf("Scanned inputs %s.\n", inputs); // remove when fixed
-				fflush(stdin);
-			} else {
-				// if scanned input has correct amount of characters
-				// assign char info to the correct variables that will hold the input digits as integers
-				orderNum = inputs[0]- '0';
-				odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
-				odMon = (10 * (inputs[3] - '0' ) ) + inputs[4] - '0';
-				odYr = (10 * (inputs[5] - '0' ) ) + inputs[6] - '0';
-				cdDay = (10 * (inputs[7] - '0' ) ) + inputs[8] - '0';
-				cdMon = (10 * (inputs[9] - '0' ) ) + inputs[10] - '0';
-				cdYr = (10 * (inputs[11] - '0' ) ) + inputs[12] - '0';
-				ctHr = (10 * (inputs[13] - '0' ) ) + inputs[14] - '0';
-				ctMin = (10 * (inputs[15] - '0' ) ) + inputs[16] - '0';
+			//Check if scanned values are integers.
+			if(!isdigit(inputs[0]) || !isdigit(inputs[1]) || !isdigit(inputs[2]) || !isdigit(inputs[3]) || !isdigit(inputs[4]) || !isdigit(inputs[5]) || !isdigit(inputs[6]) || !isdigit(inputs[7]) || !isdigit(inputs[8]) || !isdigit(inputs[9]) || !isdigit(inputs[10]) || !isdigit(inputs[11]) || !isdigit(inputs[12]) || !isdigit(inputs[13]) || !isdigit(inputs[14]) || !isdigit(inputs[15]) || !isdigit(inputs[16])){
+				if(inputs[0]=='/' ||inputs[1]=='/' || inputs[2]=='/' || inputs[3]=='/' || inputs[4]=='/' || inputs[5]=='/' || inputs[6]=='/' || inputs[7]=='/' || inputs[8]=='/' || inputs[9]=='/' || inputs[10]=='/' || inputs[11]=='/' || inputs[12]=='/' || inputs[13]=='/' || inputs[14]=='/' || inputs[15]=='/' || inputs[16]=='/' ||inputs[0]==':' ||inputs[1]==':' || inputs[2]==':' || inputs[3]==':' || inputs[4]==':' || inputs[5]==':' || inputs[6]==':' || inputs[7]==':' || inputs[8]==':' || inputs[9]==':' || inputs[10]==':' || inputs[11]==':' || inputs[12]==':' || inputs[13]==':' || inputs[14]==':' || inputs[15]==':' || inputs[16]==':'){
+					printf("Please ensure 2 digits are entered for DD MM YY values.\n");
+				}else{
+					printf("Please ensure all inputs are digits.\n");
+				}
+				int c;
+				while ((c = getchar()) != '\n' && c != EOF);
+			}else{
 
-				// verify date logic
-				int flag=1;
-				// check for valid date & time values (a month has 31 days max, a year has 12 months, the input year can't be BC - <0, a month and day doesn't have a 0 val)
-				if(odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
-					cdDay>31 || cdMon<0|| cdMon>12 || cdYr<0 || cdYr>22 || ctHr<00 || ctHr>24|| ctMin<00|| ctMin>59){
-					printf("Please ensure that date/time values are valid.\n");
-					flag=0;
-				}
-				// check that the input showing month order was made, if is during months with 30 days don't have a 31th day
-				if(odMon==4 || odMon==6 || odMon==9 || odMon==11){
-					if(odDay>30){
-						printf("Please ensure that the day value of Order Month is valid.\n");
-						flag=0;
-					}
-				}
-				// check that the input showing month class requiring the book will start, if is during months with 30 days don't have a 31th day
-				if(cdMon==4 || cdMon==6 || cdMon==9 || cdMon==11){
-					if(cdDay>30){
-						printf("Please ensure that the day value of Class Month is valid.\n");
-						flag=0;
-					}
-				}
-				// check that the input showing month order was made & input showing month class requiring the book will start if is during February is correct
-				if(cdMon==2 || odMon==2){
-					if(cdDay>28 || odDay>28){
-						printf("Please ensure that the date values (DD/MM/YY) are valid.\n");
-						flag=0;
-					}
-				}
-				// If no logic errors for input is found then add order information to the array that will be sent as a request to the bookstore server
-				if(flag){
-					order_nums[book_count] = orderNum;
-					order_date_day[book_count] = odDay;
-					order_date_mon[book_count] = odMon;
-					order_date_yr[book_count] = odYr;
-					class_date_day[book_count] = cdDay;
-					class_date_mon[book_count] = cdMon;
-					class_date_yr[book_count] = cdYr;
-					class_time_hr[book_count] = ctHr;
-					class_time_min[book_count] = ctMin;
+				if (scanned!=17) {
+					// FOR OUR GROUP: Doesn't work, after error is made once when re-prompted still doesn't accept input even if correct
+					printf("Please enter all fields to complete your order.\n");
+					printf("Scanned=%d\n", scanned);
 					fflush(stdin);
-					book_count++;
+				} else {
+					// if scanned input has correct amount of characters
+					// assign char info to the correct variables that will hold the input digits as integers
+					orderNum = inputs[0]- '0';
+					odDay = (10 * (inputs[1] - '0' ) ) + inputs[2] - '0';
+					odMon = (10 * (inputs[3] - '0' ) ) + inputs[4] - '0';
+					odYr = (10 * (inputs[5] - '0' ) ) + inputs[6] - '0';
+					cdDay = (10 * (inputs[7] - '0' ) ) + inputs[8] - '0';
+					cdMon = (10 * (inputs[9] - '0' ) ) + inputs[10] - '0';
+					cdYr = (10 * (inputs[11] - '0' ) ) + inputs[12] - '0';
+					ctHr = (10 * (inputs[13] - '0' ) ) + inputs[14] - '0';
+					ctMin = (10 * (inputs[15] - '0' ) ) + inputs[16] - '0';
+					// verify date logic
+					int flag=1;
+					// check for valid date & time values (a month has 31 days max, a year has 12 months, the input year can't be BC - <0, a month and day doesn't have a 0 val)
+					if(odDay<0 || odDay>31 || odMon <0 || odMon>12 || odYr<0 || odYr>22 || cdDay<0||
+						cdDay>31 || cdMon<0|| cdMon>12 || cdYr<0 || cdYr>22 || ctHr<00 || ctHr>24|| ctMin<00|| ctMin>59){
+						printf("Please ensure that date/time values are valid.\n");
+						fflush(stdin);
+						flag=0;
+					}
+					// check that the input showing month order was made, if is during months with 30 days don't have a 31th day
+					if(odMon==4 || odMon==6 || odMon==9 || odMon==11){
+						if(odDay>30){
+							printf("Please ensure that the day value of Order Month is valid.\n");
+							fflush(stdin);
+							flag=0;
+						}
+					}
+					// check that the input showing month class requiring the book will start, if is during months with 30 days don't have a 31th day
+					if(cdMon==4 || cdMon==6 || cdMon==9 || cdMon==11){
+						if(cdDay>30){
+							printf("Please ensure that the day value of Class Month is valid.\n");
+							fflush(stdin);
+							flag=0;
+						}
+					}
+					// check that the input showing month order was made & input showing month class requiring the book will start if is during February is correct
+					if(cdMon==2 || odMon==2){
+						if(cdDay>28 || odDay>28){
+							printf("Please ensure that the date values (DD/MM/YY) are valid.\n");
+							fflush(stdin);
+							flag=0;
+						}
+					}
+					// If no logic errors for input are found then add order information to the array that will be sent as a request to the bookstore server
+					if(flag){
+						order_nums[book_count] = orderNum;
+						order_date_day[book_count] = odDay;
+						order_date_mon[book_count] = odMon;
+						order_date_yr[book_count] = odYr;
+						class_date_day[book_count] = cdDay;
+						class_date_mon[book_count] = cdMon;
+						class_date_yr[book_count] = cdYr;
+						class_time_hr[book_count] = ctHr;
+						class_time_min[book_count] = ctMin;
+						fflush(stdin);
+						book_count++;
+					}
 				}
-			}
+		}
 			 // resets buffer holding user inputs for the second book request
 			memset(inputs, 0, 17);
 		} while (book_count < MAX_BOOKS);
