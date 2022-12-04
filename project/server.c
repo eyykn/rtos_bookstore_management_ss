@@ -103,7 +103,7 @@ int main(int argc, char **argv){
 							// reset variable that holds the message that will be sent as a response to client before re-populating it
 							memset(send_msg, 0, sizeof send_msg);
 							// populate message to send with the confirmation that order was received and the client (thread number) that made the order
-							sprintf(send_msg, "Order received for: %d", msg.send_order_msg.order_info[0][0]);
+							sprintf(send_msg, "Order received for: %d", msg.send_order_msg.order_info[0][0] + 1);
 							// send the message built above to client
 							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
 							break;
@@ -122,6 +122,7 @@ int main(int argc, char **argv){
 								//printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.thread_num) {
 									// if the client thread that made the order in order has the same number as calling thread
+
 									i_indexes[found_count] = i;
 									printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
 									printf("i: %d\n",i);
@@ -132,7 +133,7 @@ int main(int argc, char **argv){
 							memset(send_msg, 0, sizeof send_msg);
 							// build message to send back to client containing:
 							// the information for the books ordered and the priority of the order from its index in sorted client orders our of all orders recieved
-							sprintf(send_msg, "Orders confirmed for: %d -> (1) Book ordered %s with order priority: %d/%d | (2) Book ordered %s with order priority: %d/%d\n", client_orders[i_indexes[0]][0], BOOK_MENU[client_orders[i_indexes[0]][1]], i_indexes[0], orders_expected_num, BOOK_MENU[client_orders[i_indexes[1]][1]], i_indexes[1], orders_expected_num);
+							sprintf(send_msg, "Orders confirmed for: %d -> (1) Book ordered %s with order priority: %d/%d | (2) Book ordered %s with order priority: %d/%d\n", client_orders[i_indexes[0]][0] + 1, BOOK_MENU[client_orders[i_indexes[0]][1]], i_indexes[0] + 1, orders_expected_num, BOOK_MENU[client_orders[i_indexes[1]][1]], i_indexes[1]+1, orders_expected_num);
 							// send reply to client
 							MsgReply(rcvid, 0, &send_msg, sizeof(send_msg));
 							break;
