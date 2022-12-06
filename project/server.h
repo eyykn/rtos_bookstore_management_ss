@@ -6,7 +6,7 @@
         BOOK(Becoming_Michelle_Obama)  \
 		BOOK(Ghosted_Rosie_Walsh)  \
 
-#define GENERATE_STRING(STRING) #STRING,
+#define GET_BOOK_NAME(STRING) #STRING,
 #define SERVER_NAME "server_name"
 #define MAX_BOOKS 2 // number of books a client orders
 #define CLIENTNUM  3 // number of "clients" for the bookstore
@@ -16,7 +16,7 @@
 
 // array of books from books available in store
 static const char *BOOK_MENU[] = {
-	FOREACH_BOOK(GENERATE_STRING)
+	FOREACH_BOOK(GET_BOOK_NAME)
 };
 
 // different message types
