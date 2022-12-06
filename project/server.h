@@ -1,5 +1,5 @@
 // books available in bookstore
-#define FOREACH_BOOK(BOOK) \
+#define BOOK_MENU_ENUM(BOOK) \
         BOOK(Matilda_Roald_Dahl)   \
         BOOK(Educated_Tara_Westover)  \
         BOOK(Jaws_Peter_Benchley)   \
@@ -16,7 +16,7 @@
 
 // array of books from books available in store
 static const char *BOOK_MENU[] = {
-	FOREACH_BOOK(GET_BOOK_NAME)
+	BOOK_MENU_ENUM(GET_BOOK_NAME)
 };
 
 // different message types
