@@ -206,12 +206,10 @@ void* getClientOrder(){
 						}
 					}
 					// check that the input showing month order was made & input showing month class requiring the book will start if is during February is correct
-					if(cdMon==2 || odMon==2){
-						if(cdDay>28 || odDay>28){
+					if((cdMon==2 && cdDay>28) || (odMon==2 && odDay>28)){
 							printf("Please ensure that the date values (DD/MM/YY) are valid.\n");
 							fflush(stdin);
 							flag=0;
-						}
 					}
 					// If no logic errors for input are found then add order information to the array that will be sent as a request to the bookstore server
 					if(flag){
