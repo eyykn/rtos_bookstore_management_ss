@@ -119,13 +119,9 @@ int main(int argc, char **argv){
 
 							for(int i=0; i<orders_expected_num; i++){
 								// find the orders of the calling thread in client orders sorted by priority through qsort
-								//printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
 								if (client_orders[i][0] == msg.get_order_conf_msg.thread_num) {
 									// if the client thread that made the order in order has the same number as calling thread
-
 									i_indexes[found_count] = i;
-									printf("client_orders[i][0]: %d,client_orders[i][7]: %d\n",client_orders[i][0],client_orders[i][7]);
-									printf("i: %d\n",i);
 									found_count++;
 								}
 							}
@@ -157,8 +153,6 @@ int sortOrders(const void *d1, const void *d2) {
 	int* b = (int*)d2;
 	// if 2 orders being compared have different years for when the class they need the book for starts, return the earliest year
 	int classYearDiff = a[7] - b[7];
-	//printf("classYearDiff: %d\n",classYearDiff);
-	//int classYearDiff = b[7] - a[7];
 	if (classYearDiff) return classYearDiff;
 	// if 2 orders being compared have same year, compare months for when the class they need the book for starts, if they have different months return the earliest month
 	int classMonthDiff = a[6] - b[6];
