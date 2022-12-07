@@ -161,7 +161,7 @@ void* getClientOrder(){
 				if(inputs[0]=='/' ||inputs[1]=='/' || inputs[2]=='/' || inputs[3]=='/' || inputs[4]=='/' || inputs[5]=='/' || inputs[6]=='/' || inputs[7]=='/' || inputs[8]=='/' || inputs[9]=='/' || inputs[10]=='/' || inputs[11]=='/' || inputs[12]=='/' || inputs[13]=='/' || inputs[14]=='/' || inputs[15]=='/' || inputs[16]=='/' ||inputs[0]==':' ||inputs[1]==':' || inputs[2]==':' || inputs[3]==':' || inputs[4]==':' || inputs[5]==':' || inputs[6]==':' || inputs[7]==':' || inputs[8]==':' || inputs[9]==':' || inputs[10]==':' || inputs[11]==':' || inputs[12]==':' || inputs[13]==':' || inputs[14]==':' || inputs[15]==':' || inputs[16]==':'){
 					printf("Please ensure 2 digits are entered for DD MM YY values.\n");
 				}else{
-					printf("Please ensure all inputs are digits.\n");
+					printf("Please ensure all required fields are filled in.\n");
 				}
 				while (getchar() != '\n');
 			}else{
